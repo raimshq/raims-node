@@ -1,0 +1,98 @@
+{
+  "accounts": {
+    "retrieveFees": "GetAccountFees",
+    "retrieveNumber": "GetAccountNumber",
+    "retrieveCheckoutSettings": "GetCheckoutSettings",
+    "updateCheckoutSettings": "UpdateCheckoutSettings",
+    "createCheckoutLogoUpload": "CreateCheckoutLogoUpload",
+    "createCheckoutFaviconUpload": "CreateCheckoutFaviconUpload",
+    "deleteCheckoutAssetUpload": "DeleteCheckoutAssetUpload",
+    "retrieveContext": "GetAccountContext"
+  },
+  "balances": {
+    "retrieve": "GetBalance",
+    "forecast": "GetBalanceForecast"
+  },
+  "charges": {
+    "create": "CreateCharge",
+    "list": "ListCharges",
+    "retrieve": "GetCharge",
+    "update": "UpdateCharge",
+    "revoke": "RevokeCharge",
+    "retrievePayment": "GetChargePayment",
+    "retrieveReceipt": "GetChargeReceipt",
+    "retrieveBoleto": "GetChargeBoleto",
+    "createRefund": "CreateRefund",
+    "listRefunds": "ListChargeRefunds",
+    "retrieveRefundEligibility": "GetRefundEligibility",
+    "statistics": "GetChargeStatistics"
+  },
+  "customers": {
+    "create": "CreateCustomer",
+    "list": "ListCustomers",
+    "retrieve": "GetCustomer",
+    "update": "UpdateCustomer",
+    "delete": "DeleteCustomer",
+    "deleteBatch": "DeleteCustomersBatch"
+  },
+  "disputes": {
+    "list": "ListDisputes",
+    "retrieve": "GetDispute"
+  },
+  "paymentLinks": {
+    "create": "CreatePaymentLink",
+    "list": "ListPaymentLinks",
+    "retrieve": "GetPaymentLink",
+    "update": "UpdatePaymentLink",
+    "sendEmail": "SendPaymentLinkEmail"
+  },
+  "refunds": {
+    "list": "ListRefunds",
+    "retrieve": "GetRefund",
+    "retrieveReceipt": "GetRefundReceipt"
+  },
+  "statements": {
+    "list": "ListStatements",
+    "retrieve": "GetStatement"
+  },
+  "webhookEventTypes": {
+    "list": "ListWebhookEventTypes"
+  },
+  "webhooks": {
+    "create": "CreateWebhook",
+    "list": "ListWebhooks",
+    "retrieve": "GetWebhook",
+    "update": "UpdateWebhook",
+    "delete": "DeleteWebhook",
+    "retrieveHealth": "GetWebhookHealth",
+    "setPause": "SetWebhookPause",
+    "rotateSecret": "RotateWebhookSecret",
+    "test": "TestWebhook"
+  },
+  "withdrawalDestinations": {
+    "list": "ListWithdrawalDestinations",
+    "retrieve": "GetWithdrawalDestination"
+  },
+  "withdrawals": {
+    "create": "CreateWithdrawal",
+    "list": "ListWithdrawals",
+    "retrieve": "GetWithdrawal",
+    "retrieveLimits": "GetWithdrawalLimits",
+    "retrieveSummary": "GetWithdrawalSummary",
+    "retrieveAutomaticSettings": "GetAutomaticWithdrawalSettings",
+    "updateAutomaticSettings": "UpdateAutomaticWithdrawalSettings"
+  },
+  "simulationCharges": {
+    "confirmPayment": "ConfirmSimulationPayment",
+    "failPayment": "FailSimulationPayment",
+    "configureScenario": "ConfigureSimulationScenario",
+    "resolveScenario": "ResolveSimulationScenario",
+    "issuePayment": "IssueSimulationPayment",
+    "compensateBoleto": "CompensateSimulationBoleto",
+    "createRefund": "CreateSimulationRefund"
+  },
+  "simulationRefunds": {
+    "complete": "CompleteSimulationRefund",
+    "fail": "FailSimulationRefund"
+  }
+}

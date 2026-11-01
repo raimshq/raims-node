@@ -1,0 +1,5636 @@
+{
+  "source": {
+    "revision": "0169a1ed165a21748055baa144dd5b2cb84cd940",
+    "sha256": "0d74f3b440ed5650794fe948064221495f51c1bd72c250a7be5036c2719041d1"
+  },
+  "services": {
+    "accounts": {
+      "retrieveFees": "GetAccountFees",
+      "retrieveNumber": "GetAccountNumber",
+      "retrieveCheckoutSettings": "GetCheckoutSettings",
+      "updateCheckoutSettings": "UpdateCheckoutSettings",
+      "createCheckoutLogoUpload": "CreateCheckoutLogoUpload",
+      "createCheckoutFaviconUpload": "CreateCheckoutFaviconUpload",
+      "deleteCheckoutAssetUpload": "DeleteCheckoutAssetUpload",
+      "retrieveContext": "GetAccountContext"
+    },
+    "balances": {
+      "retrieve": "GetBalance",
+      "forecast": "GetBalanceForecast"
+    },
+    "charges": {
+      "create": "CreateCharge",
+      "list": "ListCharges",
+      "retrieve": "GetCharge",
+      "update": "UpdateCharge",
+      "revoke": "RevokeCharge",
+      "retrievePayment": "GetChargePayment",
+      "retrieveReceipt": "GetChargeReceipt",
+      "retrieveBoleto": "GetChargeBoleto",
+      "createRefund": "CreateRefund",
+      "listRefunds": "ListChargeRefunds",
+      "retrieveRefundEligibility": "GetRefundEligibility",
+      "statistics": "GetChargeStatistics"
+    },
+    "customers": {
+      "create": "CreateCustomer",
+      "list": "ListCustomers",
+      "retrieve": "GetCustomer",
+      "update": "UpdateCustomer",
+      "delete": "DeleteCustomer",
+      "deleteBatch": "DeleteCustomersBatch"
+    },
+    "disputes": {
+      "list": "ListDisputes",
+      "retrieve": "GetDispute"
+    },
+    "paymentLinks": {
+      "create": "CreatePaymentLink",
+      "list": "ListPaymentLinks",
+      "retrieve": "GetPaymentLink",
+      "update": "UpdatePaymentLink",
+      "sendEmail": "SendPaymentLinkEmail"
+    },
+    "refunds": {
+      "list": "ListRefunds",
+      "retrieve": "GetRefund",
+      "retrieveReceipt": "GetRefundReceipt"
+    },
+    "statements": {
+      "list": "ListStatements",
+      "retrieve": "GetStatement"
+    },
+    "webhookEventTypes": {
+      "list": "ListWebhookEventTypes"
+    },
+    "webhooks": {
+      "create": "CreateWebhook",
+      "list": "ListWebhooks",
+      "retrieve": "GetWebhook",
+      "update": "UpdateWebhook",
+      "delete": "DeleteWebhook",
+      "retrieveHealth": "GetWebhookHealth",
+      "setPause": "SetWebhookPause",
+      "rotateSecret": "RotateWebhookSecret",
+      "test": "TestWebhook"
+    },
+    "withdrawalDestinations": {
+      "list": "ListWithdrawalDestinations",
+      "retrieve": "GetWithdrawalDestination"
+    },
+    "withdrawals": {
+      "create": "CreateWithdrawal",
+      "list": "ListWithdrawals",
+      "retrieve": "GetWithdrawal",
+      "retrieveLimits": "GetWithdrawalLimits",
+      "retrieveSummary": "GetWithdrawalSummary",
+      "retrieveAutomaticSettings": "GetAutomaticWithdrawalSettings",
+      "updateAutomaticSettings": "UpdateAutomaticWithdrawalSettings"
+    },
+    "simulationCharges": {
+      "confirmPayment": "ConfirmSimulationPayment",
+      "failPayment": "FailSimulationPayment",
+      "configureScenario": "ConfigureSimulationScenario",
+      "resolveScenario": "ResolveSimulationScenario",
+      "issuePayment": "IssueSimulationPayment",
+      "compensateBoleto": "CompensateSimulationBoleto",
+      "createRefund": "CreateSimulationRefund"
+    },
+    "simulationRefunds": {
+      "complete": "CompleteSimulationRefund",
+      "fail": "FailSimulationRefund"
+    }
+  },
+  "operations": {
+    "GetCharge": {
+      "id": "GetCharge",
+      "method": "GET",
+      "path": "/v1/charges/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Charge"
+        }
+      },
+      "paginated": false
+    },
+    "UpdateCharge": {
+      "id": "UpdateCharge",
+      "method": "PATCH",
+      "path": "/v1/charges/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Charge"
+        }
+      },
+      "paginated": false
+    },
+    "RevokeCharge": {
+      "id": "RevokeCharge",
+      "method": "DELETE",
+      "path": "/v1/charges/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/ChargeRevoked"
+        },
+        "202": {
+          "$ref": "#/components/schemas/ChargeRevocationPending"
+        }
+      },
+      "paginated": false
+    },
+    "ListCharges": {
+      "id": "ListCharges",
+      "method": "GET",
+      "path": "/v1/charges",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "customer_id": {
+          "type": "string"
+        },
+        "external_reference": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "payment_method": {
+          "type": "string"
+        },
+        "created_gte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_lte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "due_gte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "due_lte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "paid_gte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "paid_lte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sort_key": {
+          "type": "string",
+          "enum": [
+            "amount_cents",
+            "created_at"
+          ]
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/ChargeListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "CreateCharge": {
+      "id": "CreateCharge",
+      "method": "POST",
+      "path": "/v1/charges",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "201": {
+          "$ref": "#/components/schemas/ChargeCreated"
+        },
+        "202": {
+          "$ref": "#/components/schemas/ChargeCreated"
+        }
+      },
+      "paginated": false
+    },
+    "CreateCustomer": {
+      "id": "CreateCustomer",
+      "method": "POST",
+      "path": "/v1/customers",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CustomerCreated"
+        },
+        "201": {
+          "$ref": "#/components/schemas/CustomerCreated"
+        }
+      },
+      "paginated": false
+    },
+    "ListCustomers": {
+      "id": "ListCustomers",
+      "method": "GET",
+      "path": "/v1/customers",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "document": {
+          "type": "string"
+        },
+        "external_reference": {
+          "type": "string"
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CustomerListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "DeleteCustomersBatch": {
+      "id": "DeleteCustomersBatch",
+      "method": "DELETE",
+      "path": "/v1/customers",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CustomerBatchDeleted"
+        }
+      },
+      "paginated": false
+    },
+    "GetCustomer": {
+      "id": "GetCustomer",
+      "method": "GET",
+      "path": "/v1/customers/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CustomerListItem"
+        }
+      },
+      "paginated": false
+    },
+    "DeleteCustomer": {
+      "id": "DeleteCustomer",
+      "method": "DELETE",
+      "path": "/v1/customers/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CustomerDeleted"
+        }
+      },
+      "paginated": false
+    },
+    "UpdateCustomer": {
+      "id": "UpdateCustomer",
+      "method": "PATCH",
+      "path": "/v1/customers/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CustomerListItem"
+        }
+      },
+      "paginated": false
+    },
+    "GetAccountFees": {
+      "id": "GetAccountFees",
+      "method": "GET",
+      "path": "/v1/accounts/fees",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/AccountFees"
+        }
+      },
+      "paginated": false
+    },
+    "ConfirmSimulationPayment": {
+      "id": "ConfirmSimulationPayment",
+      "method": "POST",
+      "path": "/v1/simulations/charges/{id}/confirm_payment",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/ChargeSimulation"
+        }
+      },
+      "paginated": false
+    },
+    "FailSimulationPayment": {
+      "id": "FailSimulationPayment",
+      "method": "POST",
+      "path": "/v1/simulations/charges/{id}/fail_payment",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/ChargeSimulation"
+        }
+      },
+      "paginated": false
+    },
+    "GetAccountContext": {
+      "id": "GetAccountContext",
+      "method": "GET",
+      "path": "/v1/accounts/context",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/AccountContext"
+        }
+      },
+      "paginated": false
+    },
+    "GetAccountNumber": {
+      "id": "GetAccountNumber",
+      "method": "GET",
+      "path": "/v1/accounts/account_number",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/AccountNumber"
+        }
+      },
+      "paginated": false
+    },
+    "GetAutomaticWithdrawalSettings": {
+      "id": "GetAutomaticWithdrawalSettings",
+      "method": "GET",
+      "path": "/v1/withdrawals/automatic_settings",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/AutomaticWithdrawalSettings"
+        }
+      },
+      "paginated": false
+    },
+    "UpdateAutomaticWithdrawalSettings": {
+      "id": "UpdateAutomaticWithdrawalSettings",
+      "method": "PATCH",
+      "path": "/v1/withdrawals/automatic_settings",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/AutomaticWithdrawalSettings"
+        }
+      },
+      "paginated": false
+    },
+    "GetBalanceForecast": {
+      "id": "GetBalanceForecast",
+      "method": "GET",
+      "path": "/v1/balances/forecast",
+      "pathParams": [],
+      "query": {
+        "period": {
+          "type": "string",
+          "enum": [
+            "today",
+            "last_7_days",
+            "last_15_days",
+            "last_30_days"
+          ]
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/BalanceForecast"
+        }
+      },
+      "paginated": false
+    },
+    "GetBalance": {
+      "id": "GetBalance",
+      "method": "GET",
+      "path": "/v1/balances",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Balance"
+        }
+      },
+      "paginated": false
+    },
+    "GetChargePayment": {
+      "id": "GetChargePayment",
+      "method": "GET",
+      "path": "/v1/charges/{id}/payment",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/PaymentReceipt"
+        }
+      },
+      "paginated": false
+    },
+    "GetChargeReceipt": {
+      "id": "GetChargeReceipt",
+      "method": "GET",
+      "path": "/v1/charges/{id}/receipt",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/FinancialDocument"
+        }
+      },
+      "paginated": false
+    },
+    "GetChargeBoleto": {
+      "id": "GetChargeBoleto",
+      "method": "GET",
+      "path": "/v1/charges/{id}/boleto",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/FinancialDocument"
+        }
+      },
+      "paginated": false
+    },
+    "CreateRefund": {
+      "id": "CreateRefund",
+      "method": "POST",
+      "path": "/v1/charges/{id}/refunds",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Refund"
+        },
+        "202": {
+          "$ref": "#/components/schemas/Refund"
+        }
+      },
+      "paginated": false
+    },
+    "ListChargeRefunds": {
+      "id": "ListChargeRefunds",
+      "method": "GET",
+      "path": "/v1/charges/{id}/refunds",
+      "pathParams": [
+        "id"
+      ],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        },
+        "created_gte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_lte": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/RefundListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "GetRefundEligibility": {
+      "id": "GetRefundEligibility",
+      "method": "GET",
+      "path": "/v1/charges/{id}/refund_eligibility",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/RefundEligibility"
+        }
+      },
+      "paginated": false
+    },
+    "GetChargeStatistics": {
+      "id": "GetChargeStatistics",
+      "method": "GET",
+      "path": "/v1/charges/statistics",
+      "pathParams": [],
+      "query": {
+        "period": {
+          "type": "string",
+          "enum": [
+            "today",
+            "last_7_days",
+            "last_15_days",
+            "last_30_days"
+          ]
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/ChargeStatistics"
+        }
+      },
+      "paginated": false
+    },
+    "CreateCheckoutLogoUpload": {
+      "id": "CreateCheckoutLogoUpload",
+      "method": "POST",
+      "path": "/v1/accounts/checkout_settings/logo_uploads",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "201": {
+          "$ref": "#/components/schemas/CheckoutAssetUpload"
+        }
+      },
+      "paginated": false
+    },
+    "CreateCheckoutFaviconUpload": {
+      "id": "CreateCheckoutFaviconUpload",
+      "method": "POST",
+      "path": "/v1/accounts/checkout_settings/favicon_uploads",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "201": {
+          "$ref": "#/components/schemas/CheckoutAssetUpload"
+        }
+      },
+      "paginated": false
+    },
+    "DeleteCheckoutAssetUpload": {
+      "id": "DeleteCheckoutAssetUpload",
+      "method": "DELETE",
+      "path": "/v1/accounts/checkout_settings/uploads/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CheckoutAssetUploadDeleted"
+        }
+      },
+      "paginated": false
+    },
+    "GetCheckoutSettings": {
+      "id": "GetCheckoutSettings",
+      "method": "GET",
+      "path": "/v1/accounts/checkout_settings",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CheckoutSettings"
+        }
+      },
+      "paginated": false
+    },
+    "UpdateCheckoutSettings": {
+      "id": "UpdateCheckoutSettings",
+      "method": "PATCH",
+      "path": "/v1/accounts/checkout_settings",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/CheckoutSettings"
+        },
+        "202": {
+          "$ref": "#/components/schemas/CheckoutSettings"
+        }
+      },
+      "paginated": false
+    },
+    "GetDispute": {
+      "id": "GetDispute",
+      "method": "GET",
+      "path": "/v1/disputes/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Dispute"
+        }
+      },
+      "paginated": false
+    },
+    "ListDisputes": {
+      "id": "ListDisputes",
+      "method": "GET",
+      "path": "/v1/disputes",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "charge_id": {
+          "type": "string"
+        },
+        "disputed_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_gte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_lte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sort_key": {
+          "type": "string",
+          "enum": [
+            "created_at",
+            "disputed_amount_cents"
+          ]
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/DisputeListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "SendPaymentLinkEmail": {
+      "id": "SendPaymentLinkEmail",
+      "method": "POST",
+      "path": "/v1/payment_links/{id}/send_email",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "202": {
+          "$ref": "#/components/schemas/PaymentLinkEmailRequestAccepted"
+        }
+      },
+      "paginated": false
+    },
+    "CreatePaymentLink": {
+      "id": "CreatePaymentLink",
+      "method": "POST",
+      "path": "/v1/payment_links",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/PaymentLink"
+        },
+        "201": {
+          "$ref": "#/components/schemas/PaymentLink"
+        }
+      },
+      "paginated": false
+    },
+    "ListPaymentLinks": {
+      "id": "ListPaymentLinks",
+      "method": "GET",
+      "path": "/v1/payment_links",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        },
+        "charge_id": {
+          "type": "string"
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/PaymentLinkListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "GetPaymentLink": {
+      "id": "GetPaymentLink",
+      "method": "GET",
+      "path": "/v1/payment_links/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/PaymentLinkDetails"
+        }
+      },
+      "paginated": false
+    },
+    "UpdatePaymentLink": {
+      "id": "UpdatePaymentLink",
+      "method": "PATCH",
+      "path": "/v1/payment_links/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/PaymentLink"
+        }
+      },
+      "paginated": false
+    },
+    "GetRefundReceipt": {
+      "id": "GetRefundReceipt",
+      "method": "GET",
+      "path": "/v1/refunds/{id}/receipt",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/FinancialDocument"
+        }
+      },
+      "paginated": false
+    },
+    "ListRefunds": {
+      "id": "ListRefunds",
+      "method": "GET",
+      "path": "/v1/refunds",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        },
+        "created_gte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_lte": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/RefundListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "GetRefund": {
+      "id": "GetRefund",
+      "method": "GET",
+      "path": "/v1/refunds/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Refund"
+        }
+      },
+      "paginated": false
+    },
+    "CompleteSimulationRefund": {
+      "id": "CompleteSimulationRefund",
+      "method": "POST",
+      "path": "/v1/simulations/refunds/{id}/complete",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Refund"
+        }
+      },
+      "paginated": false
+    },
+    "FailSimulationRefund": {
+      "id": "FailSimulationRefund",
+      "method": "POST",
+      "path": "/v1/simulations/refunds/{id}/fail",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Refund"
+        }
+      },
+      "paginated": false
+    },
+    "ConfigureSimulationScenario": {
+      "id": "ConfigureSimulationScenario",
+      "method": "POST",
+      "path": "/v1/simulations/charges/{id}/scenario",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/ChargeScenario"
+        }
+      },
+      "paginated": false
+    },
+    "ResolveSimulationScenario": {
+      "id": "ResolveSimulationScenario",
+      "method": "POST",
+      "path": "/v1/simulations/charges/{id}/resolve",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/ChargeScenario"
+        }
+      },
+      "paginated": false
+    },
+    "IssueSimulationPayment": {
+      "id": "IssueSimulationPayment",
+      "method": "POST",
+      "path": "/v1/simulations/charges/{id}/issue_payment",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Charge"
+        },
+        "202": {
+          "$ref": "#/components/schemas/Charge"
+        }
+      },
+      "paginated": false
+    },
+    "CompensateSimulationBoleto": {
+      "id": "CompensateSimulationBoleto",
+      "method": "POST",
+      "path": "/v1/simulations/charges/{id}/compensate_boleto",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/ChargeBoletoCompensation"
+        }
+      },
+      "paginated": false
+    },
+    "CreateSimulationRefund": {
+      "id": "CreateSimulationRefund",
+      "method": "POST",
+      "path": "/v1/simulations/charges/{id}/refunds",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Refund"
+        },
+        "202": {
+          "$ref": "#/components/schemas/Refund"
+        }
+      },
+      "paginated": false
+    },
+    "GetStatement": {
+      "id": "GetStatement",
+      "method": "GET",
+      "path": "/v1/statements/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Statement"
+        }
+      },
+      "paginated": false
+    },
+    "ListStatements": {
+      "id": "ListStatements",
+      "method": "GET",
+      "path": "/v1/statements",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        },
+        "statement_type": {
+          "type": "string"
+        },
+        "reference_id": {
+          "type": "string"
+        },
+        "created_gte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_lte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/StatementListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "ListWebhookEventTypes": {
+      "id": "ListWebhookEventTypes",
+      "method": "GET",
+      "path": "/v1/webhook_event_types",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WebhookEventTypeListResponse"
+        }
+      },
+      "paginated": false
+    },
+    "GetWebhookHealth": {
+      "id": "GetWebhookHealth",
+      "method": "GET",
+      "path": "/v1/webhooks/{webhook_id}/health",
+      "pathParams": [
+        "webhook_id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WebhookHealth"
+        }
+      },
+      "paginated": false
+    },
+    "SetWebhookPause": {
+      "id": "SetWebhookPause",
+      "method": "PATCH",
+      "path": "/v1/webhooks/{webhook_id}/pause",
+      "pathParams": [
+        "webhook_id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WebhookPause"
+        }
+      },
+      "paginated": false
+    },
+    "ListWebhooks": {
+      "id": "ListWebhooks",
+      "method": "GET",
+      "path": "/v1/webhooks",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WebhookListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "CreateWebhook": {
+      "id": "CreateWebhook",
+      "method": "POST",
+      "path": "/v1/webhooks",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "201": {
+          "$ref": "#/components/schemas/WebhookCreated"
+        }
+      },
+      "paginated": false
+    },
+    "GetWebhook": {
+      "id": "GetWebhook",
+      "method": "GET",
+      "path": "/v1/webhooks/{webhook_id}",
+      "pathParams": [
+        "webhook_id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Webhook"
+        }
+      },
+      "paginated": false
+    },
+    "UpdateWebhook": {
+      "id": "UpdateWebhook",
+      "method": "PATCH",
+      "path": "/v1/webhooks/{webhook_id}",
+      "pathParams": [
+        "webhook_id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Webhook"
+        }
+      },
+      "paginated": false
+    },
+    "DeleteWebhook": {
+      "id": "DeleteWebhook",
+      "method": "DELETE",
+      "path": "/v1/webhooks/{webhook_id}",
+      "pathParams": [
+        "webhook_id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "204": null
+      },
+      "paginated": false
+    },
+    "RotateWebhookSecret": {
+      "id": "RotateWebhookSecret",
+      "method": "POST",
+      "path": "/v1/webhooks/{webhook_id}/rotate_secret",
+      "pathParams": [
+        "webhook_id"
+      ],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WebhookSecretRotation"
+        }
+      },
+      "paginated": false
+    },
+    "TestWebhook": {
+      "id": "TestWebhook",
+      "method": "POST",
+      "path": "/v1/webhooks/{webhook_id}/test",
+      "pathParams": [
+        "webhook_id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": true,
+      "maxBodyBytes": null,
+      "responses": {
+        "202": {
+          "$ref": "#/components/schemas/WebhookTestAccepted"
+        }
+      },
+      "paginated": false
+    },
+    "GetWithdrawalDestination": {
+      "id": "GetWithdrawalDestination",
+      "method": "GET",
+      "path": "/v1/withdrawal_destinations/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WithdrawalDestination"
+        }
+      },
+      "paginated": false
+    },
+    "ListWithdrawalDestinations": {
+      "id": "ListWithdrawalDestinations",
+      "method": "GET",
+      "path": "/v1/withdrawal_destinations",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WithdrawalDestinationListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "GetWithdrawalLimits": {
+      "id": "GetWithdrawalLimits",
+      "method": "GET",
+      "path": "/v1/withdrawals/limits",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WithdrawalLimits"
+        }
+      },
+      "paginated": false
+    },
+    "CreateWithdrawal": {
+      "id": "CreateWithdrawal",
+      "method": "POST",
+      "path": "/v1/withdrawals",
+      "pathParams": [],
+      "query": {},
+      "body": true,
+      "idempotency": true,
+      "maxBodyBytes": 16384,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Withdrawal"
+        },
+        "202": {
+          "$ref": "#/components/schemas/Withdrawal"
+        }
+      },
+      "paginated": false
+    },
+    "ListWithdrawals": {
+      "id": "ListWithdrawals",
+      "method": "GET",
+      "path": "/v1/withdrawals",
+      "pathParams": [],
+      "query": {
+        "page_size": {
+          "type": "integer"
+        },
+        "after": {
+          "type": "string"
+        },
+        "before": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "requested_gte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "requested_lte": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sort_order": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WithdrawalListResponse"
+        }
+      },
+      "paginated": true
+    },
+    "GetWithdrawal": {
+      "id": "GetWithdrawal",
+      "method": "GET",
+      "path": "/v1/withdrawals/{id}",
+      "pathParams": [
+        "id"
+      ],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/Withdrawal"
+        }
+      },
+      "paginated": false
+    },
+    "GetWithdrawalSummary": {
+      "id": "GetWithdrawalSummary",
+      "method": "GET",
+      "path": "/v1/withdrawals/summary",
+      "pathParams": [],
+      "query": {},
+      "body": false,
+      "idempotency": false,
+      "maxBodyBytes": null,
+      "responses": {
+        "200": {
+          "$ref": "#/components/schemas/WithdrawalSummary"
+        }
+      },
+      "paginated": false
+    }
+  },
+  "schemas": {
+    "Charge": {
+      "type": "object",
+      "required": [
+        "id",
+        "customer_id",
+        "amount_cents",
+        "payment_method",
+        "checkout_payment_method",
+        "due_date",
+        "title",
+        "description",
+        "status",
+        "created_at",
+        "checkout_url",
+        "is_payable",
+        "payment_information",
+        "payment_method_types",
+        "external_reference",
+        "metadata"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "customer_id": {
+          "type": "string"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "payment_method": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "checkout_payment_method": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            null
+          ]
+        },
+        "due_date": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ]
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "checkout_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "is_payable": {
+          "type": "boolean"
+        },
+        "payment_information": {
+          "$ref": "#/components/schemas/ChargePaymentInformation"
+        },
+        "payment_method_types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "$ref": "#/components/schemas/Error"
+        }
+      }
+    },
+    "UpdateChargeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "ChargeRevoked": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "revoked",
+        "revocation_pending"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int32",
+          "const": 7
+        },
+        "revoked": {
+          "type": "boolean",
+          "const": true
+        },
+        "revocation_pending": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "ChargeRevocationPending": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "revoked",
+        "revocation_pending"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "revoked": {
+          "type": "boolean",
+          "const": false
+        },
+        "revocation_pending": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "ChargeListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ChargeListItem"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/ChargeListPage"
+        }
+      }
+    },
+    "CreateChargeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "customer_id",
+        "amount_cents",
+        "due_date"
+      ],
+      "properties": {
+        "customer_id": {
+          "type": "string"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "payment_method": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2
+          ]
+        },
+        "due_date": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "send_email": {
+          "type": "boolean"
+        },
+        "create_checkout": {
+          "type": "boolean"
+        },
+        "success_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "cancel_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "payment_method_types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "ChargeCreated": {
+      "type": "object",
+      "required": [
+        "id",
+        "customer_id",
+        "amount_cents",
+        "payment_method",
+        "due_date",
+        "title",
+        "description",
+        "status",
+        "created_at",
+        "checkout_url",
+        "payment_information",
+        "payment_method_types",
+        "external_reference",
+        "metadata"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "customer_id": {
+          "type": "string"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "payment_method": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2
+          ]
+        },
+        "due_date": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ]
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "checkout_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "payment_method_types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "payment_information": {
+          "$ref": "#/components/schemas/ChargePaymentInformation"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "CreateCustomerRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tax_id"
+      ],
+      "properties": {
+        "full_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tax_id": {
+          "type": "string"
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dial_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "phone_local": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "zip_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "street": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "street_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "complement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "neigh": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uf": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "CustomerCreated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "metadata",
+        "external_reference",
+        "object",
+        "tax_id",
+        "tax_id_type",
+        "created_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "object": {
+          "type": "string",
+          "const": "customer"
+        },
+        "tax_id": {
+          "type": "string"
+        },
+        "tax_id_type": {
+          "type": "string",
+          "enum": [
+            "cpf",
+            "cnpj"
+          ]
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CustomerListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/CustomerListItem"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/CustomerListPage"
+        }
+      }
+    },
+    "CustomerBatchDeleted": {
+      "type": "object",
+      "required": [
+        "removed",
+        "blocked",
+        "invalid",
+        "errors"
+      ],
+      "properties": {
+        "removed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "invalid": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/FieldError"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "RemoveCustomersRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identifiers"
+      ],
+      "properties": {
+        "identifiers": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "CustomerListItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "metadata",
+        "external_reference",
+        "name",
+        "first_name",
+        "last_name",
+        "email",
+        "tax_id",
+        "tax_id_type",
+        "dial_code",
+        "phone_local",
+        "zip_code",
+        "street",
+        "street_number",
+        "complement",
+        "neigh",
+        "city",
+        "state",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "tax_id": {
+          "type": "string"
+        },
+        "tax_id_type": {
+          "type": "string",
+          "enum": [
+            "cpf",
+            "cnpj"
+          ]
+        },
+        "dial_code": {
+          "type": "string"
+        },
+        "phone_local": {
+          "type": "string"
+        },
+        "zip_code": {
+          "type": "string"
+        },
+        "street": {
+          "type": "string"
+        },
+        "street_number": {
+          "type": "string"
+        },
+        "complement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "neigh": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CustomerDeleted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "deleted"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "UpdateCustomerRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dial_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "phone_local": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "zip_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "street": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "street_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "complement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "neigh": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uf": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "AccountFees": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pix",
+        "boleto"
+      ],
+      "properties": {
+        "pix": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/AccountFee"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "boleto": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/AccountFee"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "ChargeSimulation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "charge_id",
+        "status",
+        "amount_cents",
+        "duplicate"
+      ],
+      "properties": {
+        "charge_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ]
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "duplicate": {
+          "type": "boolean"
+        }
+      }
+    },
+    "AccountContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "company_id",
+        "company_name",
+        "company_status",
+        "data_environment",
+        "checked_at",
+        "access_revision",
+        "currency",
+        "amount_unit",
+        "timestamp_unit",
+        "business_timezone"
+      ],
+      "properties": {
+        "company_id": {
+          "type": "string"
+        },
+        "company_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "company_status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "active",
+            "limited"
+          ]
+        },
+        "data_environment": {
+          "type": "string",
+          "enum": [
+            "sandbox",
+            "production"
+          ]
+        },
+        "checked_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "access_revision": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string",
+          "enum": [
+            "BRL"
+          ]
+        },
+        "amount_unit": {
+          "type": "string",
+          "enum": [
+            "cents"
+          ]
+        },
+        "timestamp_unit": {
+          "type": "string",
+          "enum": [
+            "unix_seconds"
+          ]
+        },
+        "business_timezone": {
+          "type": "string",
+          "enum": [
+            "America/Sao_Paulo"
+          ]
+        }
+      }
+    },
+    "AccountNumber": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agency",
+        "account"
+      ],
+      "properties": {
+        "agency": {
+          "type": "string"
+        },
+        "account": {
+          "type": "string"
+        }
+      }
+    },
+    "AutomaticWithdrawalSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "minimum_amount_cents",
+        "time",
+        "next_execution_at"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "minimum_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "time": {
+          "type": "string"
+        },
+        "next_execution_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "UpdateAutomaticWithdrawalSettingsRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "minimum_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "time": {
+          "type": "string"
+        }
+      }
+    },
+    "BalanceForecast": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "period",
+        "start_at",
+        "end_at",
+        "forecast_date",
+        "receivable_amount_cents",
+        "projected_balance_cents",
+        "updated_at"
+      ],
+      "properties": {
+        "period": {
+          "type": "string",
+          "enum": [
+            "today",
+            "last_7_days",
+            "last_15_days",
+            "last_30_days"
+          ]
+        },
+        "start_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "end_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "forecast_date": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "receivable_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "projected_balance_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updated_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "Balance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_amount_cents",
+        "blocked_amount_cents",
+        "available_amount_cents"
+      ],
+      "properties": {
+        "total_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "blocked_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "available_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "PaymentReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "charge_id",
+        "customer_id",
+        "amount_cents",
+        "payment_method",
+        "paid_at",
+        "customer",
+        "merchant",
+        "is_sandbox",
+        "is_fiscal_document",
+        "end_to_end_id"
+      ],
+      "properties": {
+        "charge_id": {
+          "type": "string"
+        },
+        "customer_id": {
+          "type": "string"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "payment_method": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "paid_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "customer": {
+          "$ref": "#/components/schemas/ReceiptParty"
+        },
+        "merchant": {
+          "$ref": "#/components/schemas/ReceiptParty"
+        },
+        "is_sandbox": {
+          "type": "boolean"
+        },
+        "is_fiscal_document": {
+          "type": "boolean",
+          "const": false
+        },
+        "end_to_end_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "FinancialDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "expires_at"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "expires_at": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CreateRefundRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount_cents"
+      ],
+      "properties": {
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Refund": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "charge_id",
+        "amount_cents",
+        "description",
+        "status",
+        "created_at",
+        "completed_at",
+        "failed_at",
+        "failure_reason"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "charge_id": {
+          "type": "string"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "reserved",
+            "accepted",
+            "completed",
+            "failed",
+            "unknown"
+          ]
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "completed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "failed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "failure_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/RefundFailureReason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "RefundListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Refund"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/RefundListPage"
+        }
+      }
+    },
+    "RefundEligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "charge_id",
+        "eligible",
+        "reason",
+        "refundable_amount_cents",
+        "pending_amount_cents",
+        "max_refund_amount_cents"
+      ],
+      "properties": {
+        "charge_id": {
+          "type": "string"
+        },
+        "eligible": {
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/RefundUnavailableReason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "refundable_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "pending_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "max_refund_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ChargeStatistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "period",
+        "start_at",
+        "end_at",
+        "issued",
+        "issued_paid",
+        "received",
+        "payment_rate",
+        "updated_at"
+      ],
+      "properties": {
+        "period": {
+          "type": "string",
+          "enum": [
+            "today",
+            "last_7_days",
+            "last_15_days",
+            "last_30_days"
+          ]
+        },
+        "start_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "end_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "issued": {
+          "$ref": "#/components/schemas/ChargeStatisticsAggregate"
+        },
+        "issued_paid": {
+          "$ref": "#/components/schemas/ChargeStatisticsAggregate"
+        },
+        "received": {
+          "$ref": "#/components/schemas/ChargeStatisticsAggregate"
+        },
+        "payment_rate": {
+          "type": "number"
+        },
+        "updated_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "CreateCheckoutLogoUploadRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content_type",
+        "file_size",
+        "width",
+        "height"
+      ],
+      "properties": {
+        "content_type": {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg"
+          ]
+        },
+        "file_size": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        }
+      }
+    },
+    "CheckoutAssetUpload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "upload_url",
+        "method",
+        "content_type",
+        "file_size",
+        "expires_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "upload_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "method": {
+          "type": "string",
+          "const": "PUT"
+        },
+        "content_type": {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg"
+          ]
+        },
+        "file_size": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "expires_at": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CreateCheckoutFaviconUploadRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content_type",
+        "file_size",
+        "width",
+        "height"
+      ],
+      "properties": {
+        "content_type": {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg"
+          ]
+        },
+        "file_size": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        }
+      }
+    },
+    "CheckoutAssetUploadDeleted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "deleted"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "CheckoutSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "support_email",
+        "hex_primary_color",
+        "hex_secondary_color",
+        "payment_method_types",
+        "logo",
+        "favicon"
+      ],
+      "properties": {
+        "support_email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hex_primary_color": {
+          "type": "string"
+        },
+        "hex_secondary_color": {
+          "type": "string"
+        },
+        "payment_method_types": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "logo": {
+          "$ref": "#/components/schemas/CheckoutAsset"
+        },
+        "favicon": {
+          "$ref": "#/components/schemas/CheckoutAsset"
+        }
+      }
+    },
+    "UpdateCheckoutSettingsRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "support_email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hex_primary_color": {
+          "type": "string"
+        },
+        "hex_secondary_color": {
+          "type": "string"
+        },
+        "logo_upload_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "favicon_upload_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Dispute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opened_at",
+        "due_at",
+        "complaint_details",
+        "company_response",
+        "responded_at",
+        "resolved_at",
+        "won_amount_cents",
+        "lost_amount_cents",
+        "refunded_amount_cents",
+        "infraction_result",
+        "refund_result",
+        "loss_reason_code",
+        "loss_reason_note",
+        "id",
+        "charge_id",
+        "kind",
+        "stage",
+        "reason_code",
+        "disputed_amount_cents",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "opened_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "due_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "complaint_details": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "company_response": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "responded_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "resolved_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "won_amount_cents": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "lost_amount_cents": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "refunded_amount_cents": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "infraction_result": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "agreed",
+            "disagreed",
+            null
+          ]
+        },
+        "refund_result": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "partially_accepted",
+            "totally_accepted",
+            "rejected",
+            null
+          ]
+        },
+        "loss_reason_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "loss_reason_note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "charge_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "chargeback",
+            "med"
+          ]
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "open",
+            "in_analysis",
+            "refund_in_analysis",
+            "closed",
+            "cancelled",
+            "rejected",
+            "failed"
+          ]
+        },
+        "reason_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "disputed_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "DisputeListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/DisputeListItem"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/DisputeListPage"
+        }
+      }
+    },
+    "PaymentLinkEmailRequestAccepted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "charge_id",
+        "recipient_email",
+        "retry_after_seconds",
+        "retry_after_until"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "charge_id": {
+          "type": "string"
+        },
+        "recipient_email": {
+          "type": "string"
+        },
+        "retry_after_seconds": {
+          "type": "integer"
+        },
+        "retry_after_until": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CreatePaymentLinkRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "charge_id"
+      ],
+      "properties": {
+        "charge_id": {
+          "type": "string"
+        },
+        "success_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "cancel_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "payment_method_types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        }
+      }
+    },
+    "PaymentLink": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "charge_id",
+        "url",
+        "success_redirect_url",
+        "cancel_redirect_url",
+        "payment_method_types",
+        "created_at",
+        "updated_at",
+        "is_active"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "charge_id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "success_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "cancel_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "payment_method_types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "is_active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PaymentLinkListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/PaymentLink"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/PaymentLinkListPage"
+        }
+      }
+    },
+    "PaymentLinkDetails": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "charge_id",
+        "url",
+        "success_redirect_url",
+        "cancel_redirect_url",
+        "payment_method_types",
+        "created_at",
+        "updated_at",
+        "is_payable",
+        "effective_payment_method_types",
+        "unavailable_reason",
+        "is_active"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "charge_id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "success_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "cancel_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "payment_method_types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "is_payable": {
+          "type": "boolean"
+        },
+        "effective_payment_method_types": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "unavailable_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/PaymentLinkUnavailableReason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "is_active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "UpdatePaymentLinkRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "is_active": {
+          "type": "boolean"
+        },
+        "success_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "cancel_redirect_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "clear_success_redirect_url": {
+          "type": "boolean"
+        },
+        "clear_cancel_redirect_url": {
+          "type": "boolean"
+        },
+        "payment_method_types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        }
+      }
+    },
+    "ChargeScenarioRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "outcome"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "pix_issuance",
+            "boleto_issuance",
+            "cancellation"
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "failed"
+          ]
+        }
+      }
+    },
+    "ChargeScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "charge_id",
+        "action",
+        "outcome",
+        "state",
+        "charge_status",
+        "duplicate"
+      ],
+      "properties": {
+        "charge_id": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "pix_issuance",
+            "boleto_issuance",
+            "cancellation"
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "failed",
+            "completed"
+          ]
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "configured",
+            "pending",
+            "failed",
+            "completed"
+          ]
+        },
+        "charge_status": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ]
+        },
+        "duplicate": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ResolveChargeScenarioRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "outcome"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "pix_issuance",
+            "boleto_issuance",
+            "cancellation"
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "failed"
+          ]
+        }
+      }
+    },
+    "IssueSimulationPaymentRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "payment_method"
+      ],
+      "properties": {
+        "payment_method": {
+          "type": "integer"
+        }
+      }
+    },
+    "ChargeBoletoCompensation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "charge_id",
+        "status",
+        "amount_cents",
+        "duplicate"
+      ],
+      "properties": {
+        "charge_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ]
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "duplicate": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "reference_id",
+        "reference_type",
+        "statement_type",
+        "amount_cents",
+        "created_at",
+        "refund_id",
+        "dispute_id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "reference_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reference_type": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            null
+          ]
+        },
+        "statement_type": {
+          "type": "integer",
+          "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ]
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "refund_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dispute_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "StatementListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Statement"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/StatementListPage"
+        }
+      }
+    },
+    "WebhookEventTypeListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/WebhookEventType"
+          }
+        }
+      }
+    },
+    "WebhookHealth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "webhook_id",
+        "status",
+        "first_failure_at",
+        "last_failure_at",
+        "last_success_at",
+        "failure_duration_seconds",
+        "observed_at"
+      ],
+      "properties": {
+        "webhook_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "unknown",
+            "healthy",
+            "failing",
+            "disabled"
+          ]
+        },
+        "first_failure_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "last_failure_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "last_success_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "failure_duration_seconds": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "observed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "SetWebhookPauseRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "is_paused"
+      ],
+      "properties": {
+        "is_paused": {
+          "type": "boolean"
+        }
+      }
+    },
+    "WebhookPause": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "is_paused",
+        "paused_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "is_paused": {
+          "type": "boolean"
+        },
+        "paused_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "WebhookListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Webhook"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/WebhookListPage"
+        }
+      }
+    },
+    "CreateWebhookRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "url",
+        "events"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "charge.created",
+              "charge.paid",
+              "charge.canceled",
+              "charge.failed",
+              "refund.requested",
+              "refund.completed",
+              "refund.failed"
+            ]
+          }
+        },
+        "is_active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "WebhookCreated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "url",
+        "events",
+        "is_active",
+        "disabled_reason",
+        "disabled_at",
+        "previous_secret_expires_at",
+        "created_at",
+        "updated_at",
+        "secret_key",
+        "is_paused",
+        "paused_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "disabled_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "manual",
+            "continuous_failure"
+          ]
+        },
+        "disabled_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "previous_secret_expires_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "secret_key": {
+          "type": "string"
+        },
+        "is_paused": {
+          "type": "boolean"
+        },
+        "paused_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "Webhook": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "url",
+        "events",
+        "is_active",
+        "disabled_reason",
+        "disabled_at",
+        "previous_secret_expires_at",
+        "created_at",
+        "updated_at",
+        "is_paused",
+        "paused_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "disabled_reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "manual",
+            "continuous_failure"
+          ]
+        },
+        "disabled_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "previous_secret_expires_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "is_paused": {
+          "type": "boolean"
+        },
+        "paused_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "UpdateWebhookRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "is_active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "RotateWebhookSecretRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "grace_period_seconds": {
+          "type": "integer"
+        }
+      }
+    },
+    "WebhookSecretRotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "secret_key",
+        "previous_secret_expires_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "secret_key": {
+          "type": "string"
+        },
+        "previous_secret_expires_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "WebhookTestAccepted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "delivery_id"
+      ],
+      "properties": {
+        "event_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "delivery_id": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "WithdrawalDestination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "key_type",
+        "key_masked",
+        "holder_name",
+        "bank_ispb",
+        "is_default",
+        "verified_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "key_type": {
+          "type": "string",
+          "enum": [
+            "CNPJ",
+            "EVP",
+            "PHONE",
+            "EMAIL"
+          ]
+        },
+        "key_masked": {
+          "type": "string"
+        },
+        "holder_name": {
+          "type": "string"
+        },
+        "bank_ispb": {
+          "type": "string"
+        },
+        "is_default": {
+          "type": "boolean"
+        },
+        "verified_at": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "WithdrawalDestinationListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/WithdrawalDestination"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/WithdrawalDestinationListPage"
+        }
+      }
+    },
+    "WithdrawalLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum_amount_cents",
+        "fee_threshold_amount_cents",
+        "fee_below_threshold_cents",
+        "available_amount_cents",
+        "destination_configured",
+        "limits"
+      ],
+      "properties": {
+        "minimum_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fee_threshold_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fee_below_threshold_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "available_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "destination_configured": {
+          "type": "boolean"
+        },
+        "limits": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/WithdrawalPeriodLimits"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "CreateWithdrawalRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount_cents"
+      ],
+      "properties": {
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "expected_destination_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Withdrawal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "amount_cents",
+        "fee_amount_cents",
+        "net_amount_cents",
+        "status",
+        "failure_reason",
+        "bank_account",
+        "pix_destination",
+        "requested_at",
+        "completed_at",
+        "failed_at",
+        "canceled_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "fee_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "net_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "PENDING",
+            "PROCESSING",
+            "COMPLETED",
+            "FAILED",
+            "CANCELED",
+            "UNKNOWN"
+          ]
+        },
+        "failure_reason": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/WithdrawalFailureReason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bank_account": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/WithdrawalBankAccount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pix_destination": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/WithdrawalPixDestination"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "requested_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "completed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "failed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "canceled_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "WithdrawalListResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "page"
+      ],
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Withdrawal"
+          }
+        },
+        "page": {
+          "$ref": "#/components/schemas/WithdrawalListPage"
+        }
+      }
+    },
+    "WithdrawalSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "processing_count",
+        "processing_amount_cents"
+      ],
+      "properties": {
+        "processing_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "processing_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ChargePaymentInformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pix",
+        "boleto",
+        "pix_status",
+        "pix_error",
+        "boleto_status",
+        "boleto_error",
+        "boleto_payment_status"
+      ],
+      "properties": {
+        "pix": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/ChargePixPaymentInformation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "boleto": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/ChargeBoletoPaymentInformation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pix_status": {
+          "type": "string",
+          "enum": [
+            "not_generated",
+            "available",
+            "pending",
+            "failed"
+          ]
+        },
+        "pix_error": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "boleto_status": {
+          "type": "string",
+          "enum": [
+            "not_generated",
+            "available",
+            "pending",
+            "failed"
+          ]
+        },
+        "boleto_error": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/Error"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "boleto_payment_status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "awaiting_payment",
+            "compensated",
+            "settled",
+            null
+          ]
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/FieldError"
+          }
+        }
+      }
+    },
+    "ChargeListItem": {
+      "type": "object",
+      "required": [
+        "id",
+        "customer_id",
+        "amount_cents",
+        "payment_method",
+        "checkout_payment_method",
+        "due_date",
+        "title",
+        "description",
+        "status",
+        "created_at",
+        "checkout_url",
+        "payment_method_types",
+        "external_reference",
+        "metadata"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "customer_id": {
+          "type": "string"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "payment_method": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        "checkout_payment_method": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            null
+          ]
+        },
+        "due_date": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": "integer",
+          "enum": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ]
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "checkout_url": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "payment_method_types": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        },
+        "external_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ChargeListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "CustomerListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "FieldError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field",
+        "code",
+        "message"
+      ],
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "AccountFee": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "percentage_rate",
+        "fixed_fee_cents",
+        "minimum_fee_cents",
+        "maximum_fee_cents"
+      ],
+      "properties": {
+        "percentage_rate": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "fixed_fee_cents": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "minimum_fee_cents": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        },
+        "maximum_fee_cents": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64"
+        }
+      }
+    },
+    "ReceiptParty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "tax_id"
+      ],
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tax_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "RefundFailureReason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "REFUND_NOT_SUBMITTED",
+            "REFUND_REJECTED",
+            "REFUND_PROCESSING_UNAVAILABLE",
+            "REFUND_PROCESSING_FAILED",
+            "REFUND_FAILURE_REASON_UNAVAILABLE"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "RefundListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "RefundUnavailableReason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "PIX_REFUND_NOT_AVAILABLE",
+            "PIX_REFUND_CASHIN_NOT_FOUND",
+            "PIX_REFUND_PROVIDER_ACCOUNT_NOT_READY",
+            "PIX_REFUND_IN_PROGRESS",
+            "PIX_REFUND_ALREADY_COMPLETED",
+            "PIX_REFUND_INSUFFICIENT_BALANCE",
+            "PIX_REFUND_PROVIDER_UNAVAILABLE"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "ChargeStatisticsAggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "count",
+        "amount_cents"
+      ],
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "CheckoutAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "status",
+        "error_code"
+      ],
+      "properties": {
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "absent",
+            "ready",
+            "pending",
+            "failed"
+          ]
+        },
+        "error_code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "CHECKOUT_ASSET_INVALID_IMAGE",
+            "CHECKOUT_ASSET_UPLOAD_NOT_FOUND",
+            "CHECKOUT_ASSET_PROCESSING_FAILED"
+          ]
+        }
+      }
+    },
+    "DisputeListItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "charge_id",
+        "kind",
+        "stage",
+        "reason_code",
+        "disputed_amount_cents",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "charge_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "chargeback",
+            "med"
+          ]
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "open",
+            "in_analysis",
+            "refund_in_analysis",
+            "closed",
+            "cancelled",
+            "rejected",
+            "failed"
+          ]
+        },
+        "reason_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "disputed_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "DisputeListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "PaymentLinkListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "PaymentLinkUnavailableReason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "PAYMENT_LINK_PAUSED",
+            "CHARGE_EXPIRED",
+            "CHARGE_NOT_OPEN",
+            "BOLETO_AWAITING_SETTLEMENT",
+            "PIX_CANCELLATION_PENDING",
+            "PIX_CANCELLED",
+            "PAYMENT_METHODS_UNAVAILABLE"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "StatementListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "WebhookEventType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "charge.created",
+            "charge.paid",
+            "charge.canceled",
+            "charge.failed",
+            "refund.requested",
+            "refund.completed",
+            "refund.failed"
+          ]
+        }
+      }
+    },
+    "WebhookListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "WithdrawalDestinationListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "WithdrawalPeriodLimits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "day_limit_cents",
+        "night_limit_cents",
+        "period_limit_cents",
+        "period_used_cents",
+        "period_remaining_cents",
+        "request_maximum_amount_cents",
+        "period",
+        "period_ends_at"
+      ],
+      "properties": {
+        "day_limit_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "night_limit_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "period_limit_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "period_used_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "period_remaining_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "request_maximum_amount_cents": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "period": {
+          "type": "string"
+        },
+        "period_ends_at": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "WithdrawalFailureReason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "INVALID_BANK_ACCOUNT",
+            "BANK_ACCOUNT_UNAVAILABLE",
+            "BANK_UNSUPPORTED",
+            "INVALID_ACCOUNT_TYPE",
+            "INSUFFICIENT_BALANCE",
+            "BLOCKED_BALANCE",
+            "BELOW_MINIMUM_WITHDRAWAL",
+            "ABOVE_MAXIMUM_WITHDRAWAL",
+            "WITHDRAWAL_LIMIT_REACHED",
+            "DUPLICATED_REQUEST",
+            "RISK_POLICY_REJECTED",
+            "WITHDRAWAL_TEMPORARILY_UNAVAILABLE",
+            "BANK_PROCESSING_FAILURE",
+            "BANK_TIMEOUT",
+            "INTERNAL_ERROR",
+            "WITHDRAWAL_FAILURE_REASON_UNAVAILABLE"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "WithdrawalBankAccount": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bank_code",
+        "branch",
+        "account_number_masked"
+      ],
+      "properties": {
+        "bank_code": {
+          "type": "string"
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "account_number_masked": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "WithdrawalPixDestination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key_type",
+        "key_masked",
+        "holder_name",
+        "bank_ispb"
+      ],
+      "properties": {
+        "key_type": {
+          "type": "string",
+          "enum": [
+            "CNPJ",
+            "EVP",
+            "PHONE",
+            "EMAIL"
+          ]
+        },
+        "key_masked": {
+          "type": "string"
+        },
+        "holder_name": {
+          "type": "string"
+        },
+        "bank_ispb": {
+          "type": "string"
+        }
+      }
+    },
+    "WithdrawalListPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_size",
+        "has_next",
+        "has_previous",
+        "next_after",
+        "previous_before"
+      ],
+      "properties": {
+        "page_size": {
+          "type": "integer"
+        },
+        "has_next": {
+          "type": "boolean"
+        },
+        "has_previous": {
+          "type": "boolean"
+        },
+        "next_after": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "previous_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "ChargePixPaymentInformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "copy_paste",
+        "expires_at",
+        "qr_code_base64"
+      ],
+      "properties": {
+        "copy_paste": {
+          "type": "string"
+        },
+        "expires_at": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "qr_code_base64": {
+          "type": "string"
+        }
+      }
+    },
+    "ChargeBoletoPaymentInformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "line_digits",
+        "barcode",
+        "due_date"
+      ],
+      "properties": {
+        "line_digits": {
+          "type": "string"
+        },
+        "barcode": {
+          "type": "string"
+        },
+        "due_date": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    }
+  }
+}

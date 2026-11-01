@@ -1,0 +1,32 @@
+{
+  "name": "raims",
+  "version": "0.1.0",
+  "description": "SDK Node.js para a API pública da Raims",
+  "homepage": "https://docs.raims.com/br/api",
+  "repository": { "type": "git", "url": "https://github.com/raimshq/raims-node.git" },
+  "bugs": { "url": "https://github.com/raimshq/raims-node/issues" },
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "./src/index.cjs",
+  "module": "./src/index.mjs",
+  "types": "./types/index.d.cts",
+  "exports": {
+    ".": {
+      "import": { "types": "./types/index.d.mts", "default": "./src/index.mjs" },
+      "require": { "types": "./types/index.d.cts", "default": "./src/index.cjs" }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["src/", "types/", "docs/usage.md", "docs/webhooks.md", "docs/reference.md", "README.md", "SECURITY.md", "LICENSE"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "generate": "node scripts/generate.cjs",
+    "check-generated": "node scripts/generate.cjs --check",
+    "check-source": "node scripts/check-source.cjs",
+    "check-compatibility": "node scripts/check-compatibility.cjs --check",
+    "snapshot-api": "node scripts/check-compatibility.cjs --write",
+    "check": "node scripts/check.cjs",
+    "prepack": "npm run check"
+  },
+  "keywords": ["raims", "sdk", "payments", "pix", "typescript"]
+}

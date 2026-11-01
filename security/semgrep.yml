@@ -1,0 +1,34 @@
+rules:
+  - id: raims.node.tls-validation-disabled
+    languages: [javascript]
+    severity: ERROR
+    message: Keep TLS certificate validation enabled.
+    pattern-either:
+      - pattern: process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+      - pattern: process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
+      - pattern: $OPTIONS.rejectUnauthorized = false
+      - pattern: "{..., rejectUnauthorized: false, ...}"
+  - id: raims.node.shell-command
+    languages: [javascript]
+    severity: ERROR
+    message: Execute engineering commands with argument arrays and without a shell.
+    pattern-either:
+      - pattern: "$PROCESS.spawn(..., { ..., shell: true, ... }, ...)"
+      - pattern: "$PROCESS.spawnSync(..., { ..., shell: true, ... }, ...)"
+  - id: raims.node.dynamic-code
+    languages: [javascript]
+    severity: ERROR
+    message: Do not evaluate executable code from strings in the SDK.
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+  - id: raims.node.embedded-private-key
+    languages: [generic]
+    severity: ERROR
+    message: Load private keys from the application's secret store.
+    pattern-regex: '-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\s]+[A-Za-z0-9+/=]{32}'
+  - id: raims.node.embedded-github-token
+    languages: [generic]
+    severity: ERROR
+    message: Keep access tokens outside source files.
+    pattern-regex: '\b(?:gh[pousr]_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{82})\b'
