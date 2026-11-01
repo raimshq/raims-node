@@ -1,10 +1,10 @@
-# Segurança
+# Security
 
-Relate vulnerabilidades de forma privada para `security@raims.com`, com versão
-do SDK, impacto e reprodução mínima usando dados fictícios. Não abra uma issue
-pública com credenciais, dados pessoais ou acesso a recursos de uma conta.
+Report vulnerabilities privately to `security@raims.com`, including the SDK
+version, impact, and a minimal reproduction using synthetic data. Do not open
+a public issue containing credentials, personal data, or access to account resources.
 
-Execute o SDK no servidor. Mantenha TLS e os controles de acesso da aplicação.
-Proteja chaves, segredos, corpos financeiros e links temporários, inclusive em
-tratadores de erro e logs. Autentique webhooks pelos bytes originais e persista
-a deduplicação do evento antes de aplicar seus efeitos.
+Run the SDK on the server. Keep TLS verification and your application's access
+controls enabled. Protect keys, secrets, financial payloads, and temporary links,
+including in error handlers and logs. Authenticate webhooks using the original
+bytes and persist event deduplication before applying their effects.

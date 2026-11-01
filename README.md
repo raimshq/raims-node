@@ -1,41 +1,41 @@
 # Raims Node.js
 
-SDK para integrar aplicações Node.js à API pública da Raims, com tipos
-TypeScript, módulos ESM e CommonJS e métodos organizados por recurso.
+Official Node.js SDK for the Raims public API, with TypeScript types,
+ESM and CommonJS modules, and methods organized by resource.
 
-Requer Node.js 22 ou superior. Usa o transporte HTTP do Node.js e não exige
-dependências de produção. Execute o SDK no servidor e mantenha a chave de API
-fora do navegador, do controle de versão e dos logs.
+Requires Node.js 22 or later. Uses Node.js HTTP transport and has no production
+dependencies. Run the SDK on the server and keep API keys out of browsers,
+version control, and logs.
 
-## Instalação pelo GitHub
+## Install from GitHub
 
-No projeto que vai consumir o SDK, instale o pacote da release atual:
+In the application that will use the SDK, install the package from the latest release:
 
 ```sh
 npm install https://github.com/raimshq/raims-node/releases/latest/download/raims-node.tgz
 ```
 
-O nome do pacote é `raims`. Os tipos são incluídos na instalação. A distribuição
-no registry npm ainda não está disponível.
+The package name is `raims`. TypeScript declarations are included. The package
+is not yet available from the npm registry.
 
-Para atualizar, baixe o pacote da
-[release atual](https://github.com/raimshq/raims-node/releases/latest) e instale
-o arquivo no projeto consumidor:
+To update, download the package from the
+[latest release](https://github.com/raimshq/raims-node/releases/latest) and install
+the file in your application:
 
 ```sh
-npm install /caminho/para/raims-node.tgz
+npm install /path/to/raims-node.tgz
 ```
 
-Confira as notas da release e teste sua integração após atualizar. A instalação
-registra a versão escolhida; atualizações futuras não são aplicadas automaticamente.
+Read the release notes and test your integration after updating. Installation
+records the selected version; future updates are not installed automatically.
 
-## Primeiro uso
+## Quick start
 
 ```js
 import Raims from 'raims';
 
 const apiKey = process.env.RAIMS_API_KEY;
-if (!apiKey) throw new Error('Configure RAIMS_API_KEY no servidor.');
+if (!apiKey) throw new Error('Set RAIMS_API_KEY on the server.');
 
 const raims = new Raims(apiKey);
 const customers = await raims.customers.list({ page_size: 20 });
@@ -45,25 +45,25 @@ for (const customer of customers.list) {
 }
 ```
 
-Com CommonJS, use `const Raims = require('raims')`. Também estão disponíveis
-os exports nomeados `Raims` e `RaimsClient`, que representam o mesmo construtor.
+For CommonJS, use `const Raims = require('raims')`. The named exports `Raims`
+and `RaimsClient` refer to the same constructor.
 
-A URL-base é `https://api.raims.com` nos dois ambientes. A chave de API
-determina a empresa, o ambiente e as permissões; o cliente não oferece um
-seletor de ambiente. Use uma chave Sandbox para as simulações.
+The base URL is `https://api.raims.com` in both environments. The API key
+determines the company, environment, and permissions; the client does not
+provide an environment selector. Use a Sandbox key for simulations.
 
-## Criar uma cobrança
+## Create a charge
 
-O exemplo usa um cliente já cadastrado. `customerId`, `chargeDueDate` e
-`chargeIdempotencyKey` são valores definidos e persistidos pela aplicação
-para o pedido antes da requisição.
+This example uses an existing customer. `customerId`, `chargeDueDate`, and
+`chargeIdempotencyKey` are values your application defines and persists for
+the order before sending the request.
 
 ```js
 const charge = await raims.charges.create({
   customer_id: customerId,
   amount_cents: 15000,
   due_date: chargeDueDate,
-  title: 'Pedido 1234',
+  title: 'Order 1234',
 }, {
   idempotencyKey: chargeIdempotencyKey,
 });
@@ -71,11 +71,11 @@ const charge = await raims.charges.create({
 const { statusCode, requestId } = charge.lastResponse;
 ```
 
-`15000` representa R$ 150,00. Datas dos recursos usam segundos Unix UTC.
-Após perder uma resposta, conserve a mesma chave e todos os parâmetros,
-inclusive o vencimento. O SDK não gera chaves de idempotência e não repete
-escritas automaticamente. HTTP `202` indica resultado pendente e exige
-acompanhar o recurso; não confirma pagamento ou conclusão financeira.
+`15000` means BRL 150.00. Resource dates use UTC Unix seconds. After losing a
+response, retain the same key and every parameter, including the due date.
+The SDK does not generate idempotency keys or retry writes automatically.
+HTTP `202` means the result is pending and you must track the resource; it
+does not confirm payment or completion of the financial operation.
 
 ## TypeScript
 
@@ -93,11 +93,11 @@ const charge = await raims.charges.create(params, {
 });
 ```
 
-Os tipos também estão no namespace `Raims`, por exemplo
-`Raims.CreateChargeParams` e `Raims.Charge`. São gerados do mesmo contrato
-que define os métodos e a validação estrutural das respostas.
+Types are also available in the `Raims` namespace, such as
+`Raims.CreateChargeParams` and `Raims.Charge`. They are generated from the
+same contract that defines the methods and structural response validation.
 
-## Percorrer páginas
+## Iterate through pages
 
 ```js
 for await (const charge of raims.charges.list({ page_size: 100 })) {
@@ -107,24 +107,24 @@ for await (const charge of raims.charges.list({ page_size: 100 })) {
 const customers = await raims.customers.list().autoPagingToArray({ limit: 200 });
 ```
 
-O iterador busca novas páginas quando necessário e para ao sair do laço.
-`await list()` retorna uma página com `list`, `page`, `nextPage()` e
-`previousPage()`. Filtros e opções acompanham as próximas leituras.
+The iterator fetches pages as needed and stops when you leave the loop.
+`await list()` returns a page with `list`, `page`, `nextPage()`, and
+`previousPage()`. Filters and options are retained for subsequent reads.
 
-## Recursos
+## Resources
 
 `accounts`, `balances`, `customers`, `charges`, `paymentLinks`, `refunds`,
 `disputes`, `statements`, `withdrawals`, `withdrawalDestinations`, `webhooks`,
-`webhookEventTypes`, `simulations.charges` e `simulations.refunds`.
+`webhookEventTypes`, `simulations.charges`, and `simulations.refunds`.
 
-Consulte a [referência](docs/reference.md) para os métodos de cada recurso.
+See the [reference](docs/reference.md) for each resource's methods.
 
-## Documentação
+## Documentation
 
-- [Configuração, paginação, erros e idempotência](docs/usage.md)
-- [Recebimento e autenticação de webhooks](docs/webhooks.md)
-- [Referência dos métodos](docs/reference.md)
-- [Segurança](SECURITY.md)
-- [Documentação da API](https://docs.raims.com/br/api)
+- [Configuration, pagination, errors, and idempotency](docs/usage.md)
+- [Receiving and authenticating webhooks](docs/webhooks.md)
+- [Method reference](docs/reference.md)
+- [Security](SECURITY.md)
+- [API documentation](https://docs.raims.com/en/api)
 
-Distribuído sob a licença [MIT](LICENSE).
+Distributed under the [MIT license](LICENSE).

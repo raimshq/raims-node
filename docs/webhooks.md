@@ -1,7 +1,7 @@
-# Receber webhooks
+# Receive webhooks
 
-Leia o corpo original como bytes, antes de qualquer parser JSON. O helper
-autentica a entrega e só então decodifica o objeto JSON.
+Read the original body as bytes before using a JSON parser. The helper
+authenticates the delivery before decoding the JSON object.
 
 ```js
 import { Webhook } from 'raims';
@@ -9,28 +9,27 @@ import { Webhook } from 'raims';
 const event = Webhook.constructEvent(rawBody, request.headers, webhookSecret);
 ```
 
-`rawBody` aceita string, `Buffer` ou `Uint8Array`. `request.headers` aceita
-`Headers` ou um objeto com nomes de headers e valores string. Os helpers
-também estão em `Raims.Webhook` e em `raims.webhooks`, sem fazer chamadas HTTP.
-Use `verifySignature` quando precisar apenas autenticar os bytes.
+`rawBody` accepts a string, `Buffer`, or `Uint8Array`. `request.headers` accepts
+`Headers` or an object mapping header names to string values. The helpers are
+also available at `Raims.Webhook` and `raims.webhooks`, without HTTP requests.
+Use `verifySignature` when you only need to authenticate the bytes.
 
-O segredo é o valor `whsec_...` retornado no cadastro ou na rotação do webhook.
-Ele é diferente da chave de API. Guarde-o no servidor e mantenha-o fora dos logs.
+The secret is the `whsec_...` value returned when creating a webhook or rotating
+its secret. It differs from the API key. Store it on the server and keep it out of logs.
 
-O SDK confere `webhook-id`, `webhook-timestamp` e `webhook-signature`, sem
-distinguir maiúsculas de minúsculas nos nomes dos headers. O ID da entrega
-precisa ser um UUID. O segredo Base62 é decodificado para os 32 bytes da chave
-de assinatura na ordem usada pela Raims. A assinatura HMAC-SHA256 autentica
-`webhook-id.webhook-timestamp.corpo_original`; a comparação usa tempo constante.
-Uma assinatura `v1` válida entre as candidatas autentica a entrega durante a
-rotação de segredos.
+The SDK checks `webhook-id`, `webhook-timestamp`, and `webhook-signature`, treating
+header names as case-insensitive. The delivery ID must be a UUID. The Base62
+secret is decoded to the 32 signing-key bytes in the order used by Raims.
+HMAC-SHA256 authenticates `webhook-id.webhook-timestamp.original_body`, with a
+constant-time comparison. One valid `v1` signature among the candidates
+authenticates the delivery during secret rotation.
 
-Headers duplicados ou ambíguos são recusados. Coleções `Headers` podem juntar
-valores antes de o SDK recebê-los: preserve a multiplicidade dos headers no
-servidor HTTP e recuse duplicatas na entrada. Candidatas de assinatura no mesmo
-header são permitidas para rotação.
+Duplicate or ambiguous headers are rejected. A `Headers` collection may combine
+values before the SDK receives them: preserve header multiplicity in your HTTP
+server and reject duplicates at the boundary. Multiple signature candidates in
+one header are allowed for rotation.
 
-A tolerância padrão é de 300 segundos para o passado e o futuro. Para ajustá-la:
+The default tolerance is 300 seconds into the past or future. To change it:
 
 ```js
 const event = Webhook.constructEvent(rawBody, request.headers, webhookSecret, {
@@ -38,14 +37,14 @@ const event = Webhook.constructEvent(rawBody, request.headers, webhookSecret, {
 });
 ```
 
-`now` permite informar o instante de referência em segundos Unix UTC.
-`tolerance: 0` exige o mesmo segundo e não desabilita a conferência de tempo.
-Assinatura inválida, tempo fora da tolerância ou JSON autenticado incompatível
-geram `SignatureVerificationError`.
+`now` sets the reference time in UTC Unix seconds. `tolerance: 0` requires the
+same second; it does not disable the time check. An invalid signature, a timestamp
+outside the tolerance, or an incompatible authenticated JSON body raises
+`SignatureVerificationError`.
 
-Depois de autenticar a entrega, confira o ambiente e os dados autorizados antes
-de processar o evento. Persista o trabalho e a deduplicação antes de responder
-com sucesso HTTP; se não conseguir persistir, retorne falha para permitir a
-reentrega. Use `event.id` para deduplicar o processamento: ele identifica
-o evento lógico; `webhook-id` identifica a entrega. A assinatura não elimina
-reentregas nem substitui a idempotência do processamento da sua aplicação.
+After authenticating a delivery, check the environment and authorized data before
+processing the event. Persist the work and deduplication before returning a
+successful HTTP response. If persistence fails, return a failure to allow redelivery.
+Use `event.id` to deduplicate processing: it identifies the logical event, while
+`webhook-id` identifies the delivery. A signature does not eliminate redeliveries
+or replace idempotent processing in your application.

@@ -1,8 +1,8 @@
-# Referência do SDK Node.js
+# Node.js SDK reference
 
-Métodos, entradas e respostas para integrar com a API pública da Raims.
+Methods, inputs, and responses for integrating with the Raims public API.
 
-| Serviço e método | Operação HTTP | Entrada | Resposta |
+| Service and method | HTTP operation | Input | Response |
 | --- | --- | --- | --- |
 | `accounts.retrieveFees` | `GET /v1/accounts/fees` | - | `AccountFees` |
 | `accounts.retrieveNumber` | `GET /v1/accounts/account_number` | - | `AccountNumber` |

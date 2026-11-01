@@ -1,12 +1,12 @@
-# Contrato e manutenção
+# Contract and maintenance
 
-## Fonte e geração
+## Source and generation
 
-`contracts/source.json` registra a revisão pública imutável, o SHA-256, a
-versão HTTP, a revisão implantada e a quantidade de operações.
-`contracts/openapi.json` preserva os bytes dessa revisão de
-[raimshq/openapi](https://github.com/raimshq/openapi). A fonte canônica pertence
-à Public API; o SDK consome somente a superfície com publicação comprovada.
+`contracts/source.json` records the immutable public revision, SHA-256, HTTP
+version, deployed revision, and operation count.
+`contracts/openapi.json` retains the bytes from that revision of
+[raimshq/openapi](https://github.com/raimshq/openapi). The canonical source
+belongs to the Public API; the SDK consumes only the confirmed published surface.
 
 ```sh
 npm run generate
@@ -16,112 +16,111 @@ npm run check-compatibility
 npm run check
 ```
 
-A geração é offline, confere o checksum e exige que `contracts/service-map.json`
-cubra cada operação exatamente uma vez. Produz o catálogo de transporte, os
-modelos e serviços TypeScript e a referência de métodos. `--check` compara as
-saídas sem regravá-las. O SDK suporta chave de API; os parâmetros exclusivos
-de OAuth do contrato não entram nas assinaturas nem no transporte.
+Generation is offline, verifies the checksum, and requires
+`contracts/service-map.json` to cover each operation exactly once. It produces
+the transport catalog, TypeScript models and services, and method reference.
+`--check` compares outputs without rewriting them. The SDK supports API-key
+authentication; OAuth-only contract parameters are excluded from signatures
+and transport.
 
-O gerador recusa combinações que exigem suporte adicional: corpo e query na
-mesma operação, serializações de query diferentes de form, parâmetros fora
-das posições suportadas, identificadores de caminho não textuais, composições
-`oneOf`/`allOf`, nulabilidade legada e múltiplos tipos não nulos. Referências
-com alterações estruturais também exigem revisão. Não retire esses bloqueios
-sem alinhar tipos, transporte, validação e regressões.
+The generator rejects combinations that require additional support: a body and
+query in one operation, query serialization other than form, unsupported parameter
+locations, non-string path identifiers, `oneOf`/`allOf`, legacy nullability, and
+multiple non-null types. References with structural changes also require review.
+Do not remove these guards without aligning types, transport, validation, and regressions.
 
-| Caminho | Responsabilidade |
+| Path | Responsibility |
 | --- | --- |
-| `src/index.cjs` e `src/index.mjs` | Composição e exports CommonJS/ESM |
-| `src/requestor.cjs` | Configuração, transporte, retries de leitura e erros HTTP |
-| `src/validation.cjs` | JSON, precisão numérica e estrutura das respostas |
-| `src/pagination.cjs` | Cursores, navegação e iteradores |
-| `src/webhook.cjs` | Autenticação do corpo original |
-| `src/errors.cjs` | Categorias e diagnóstico de falhas |
-| `scripts/generate.cjs` | Geração determinística a partir do contrato fixado |
+| `src/index.cjs` and `src/index.mjs` | CommonJS/ESM composition and exports |
+| `src/requestor.cjs` | Configuration, transport, read retries, and HTTP errors |
+| `src/validation.cjs` | JSON, numeric precision, and response structure |
+| `src/pagination.cjs` | Cursors, navigation, and iterators |
+| `src/webhook.cjs` | Original-body authentication |
+| `src/errors.cjs` | Error categories and diagnostics |
+| `scripts/generate.cjs` | Deterministic generation from the pinned contract |
 
-Ao atualizar o contrato, confira manifesto e checksum públicos antes de trocar
-o snapshot e a origem. Revise mudanças de tipos, status, campos obrigatórios,
-nulabilidade, autenticação, ambiente, paginação e idempotência. Não edite o
-snapshot para inventar endpoints ou regras. Atualize o mapa de serviços e
-regenere as saídas; revise todo o diff e os impactos na aplicação consumidora.
+When updating the contract, verify the public manifest and checksum before
+replacing the snapshot and source metadata. Review type, status, required-field,
+nullability, authentication, environment, pagination, and idempotency changes.
+Do not edit the snapshot to invent endpoints or rules. Update the service map,
+regenerate outputs, and review the full diff and effects on consuming applications.
 
-## Verificação local
+## Local validation
 
-`npm run check` chama `Developer-Toolkit/scripts/release-preflight/node_sdk.py`.
-O adapter reconstrói as suítes e consumidores a partir de suas receitas
-versionadas e grava os arquivos físicos somente em `.tmp`. Confere as fontes
-antes e depois da execução, o contrato fixado, a geração, a sintaxe, os tipos,
-a compatibilidade e o pacote instalado, com transporte falso e loopback.
+`npm run check` invokes `Developer-Toolkit/scripts/release-preflight/node_sdk.py`.
+The adapter recreates suites and consumers from its versioned recipes and writes
+physical files only to `.tmp`. It checks sources before and after execution,
+the pinned contract, generation, syntax, types, compatibility, and the installed
+package using fake transports and loopback receivers.
 
-O primeiro preparo usa `npm run check -- --prepare-tools`. TypeScript e os tipos
-do Node.js ficam em versões exatas no cache, com lockfile e integridades
-conferidas. `RAIMS_PYTHON` seleciona o Python do atalho. Ferramenta ausente ou
-divergente, auditoria incompleta e mudanças nas fontes bloqueiam a validação.
+Initial preparation uses `npm run check -- --prepare-tools`. TypeScript and Node.js
+types are pinned to exact versions in the cache, with a lockfile and integrity
+checks. `RAIMS_PYTHON` selects the shortcut's Python executable. Missing or changed
+tools, incomplete audits, and source drift block validation.
 
-O relatório só aprova a execução após a conferência final de integridade.
-Se essa conferência falhar, o resultado é de falha, mesmo quando os testes
-anteriores passaram. Os comandos e seus descendentes são encerrados também
-quando o processo principal termina normalmente. O gate de engenharia exige
-contenção de processos disponível no Windows ou no Linux; isso não altera
-os requisitos do runtime do SDK instalado pelo integrador.
+A run passes only after the final integrity check. If that check fails, the run
+fails even if previous tests passed. Commands and their descendants are stopped
+when the main process exits normally as well. The engineering gate requires
+Windows or Linux process containment; this does not change the runtime
+requirements for the package installed by an integrator.
 
-`npm run check-source` é um check parcial de geração e sintaxe, disponível
-sem o Toolkit. Um clone isolado não declara o gate completo aprovado. Todos
-os testes, simuladores, consumidores e relatórios permanecem em
+`npm run check-source` is a partial generation and syntax check available without
+the Toolkit. An isolated clone cannot claim full gate approval. All tests,
+simulators, consumers, and reports remain in
 `C:\server\raims\.tmp\raims-node-sdk`.
 
-O lifecycle `prepack` chama o gate completo. Dentro desse gate, o pacote é
-criado com `--ignore-scripts` para evitar recursão, instalado em um consumidor
-limpo e conferido em ESM e CommonJS. O artefato contém somente runtime, tipos,
-guias do integrador e licença. Contratos, gerador, base de compatibilidade,
-instruções internas, ferramentas e testes ficam fora da distribuição.
+The `prepack` lifecycle invokes the full gate. Inside that gate, the package is
+created with `--ignore-scripts` to avoid recursion, installed in a clean consumer,
+and checked in ESM and CommonJS. The artifact contains only runtime, types,
+integrator guides, and the license. Contracts, the generator, the compatibility
+baseline, internal instructions, tools, and tests are excluded.
 
-## Compatibilidade da biblioteca
+## Library compatibility
 
-`contracts/node-api.json` registra os símbolos públicos TypeScript e os
-exports de runtime. `npm run check-compatibility` compara a implementação
-com essa base sem gravá-la. Ela é independente do contrato HTTP e não muda
-durante `npm run generate`.
+`contracts/node-api.json` records the public TypeScript symbols and runtime
+exports. `npm run check-compatibility` compares the implementation without
+rewriting this baseline. It is independent of HTTP generation and is not
+changed by `npm run generate`.
 
-O check recusa remoções, renomes e mudanças incompatíveis de tipos,
-obrigatoriedade e parâmetros, incluindo novos métodos obrigatórios em tipos
-estruturais. Métodos opcionais podem ser adicionados sem exigir mudanças dos
-consumidores existentes. Adições claramente compatíveis são permitidas;
-mudanças complexas passam por comparação conservadora. TypeScript 6.0.3 é
-usado para extrair as declarações. `RAIMS_TYPESCRIPT` ou `--typescript` permite
-indicar o módulo dessa versão; o gate usa a cópia cuja integridade conferiu.
+The check rejects removals, renames, and incompatible changes to types,
+requiredness, and parameters, including new required methods in structural
+types. Optional methods can be added without requiring existing consumers
+to change. Clearly compatible additions are accepted; complex changes are
+compared conservatively. TypeScript 6.0.3 extracts the declarations.
+`RAIMS_TYPESCRIPT` or `--typescript` can select that version's module; the gate
+uses the copy whose integrity it verified.
 
-Uma revisão deliberada da base usa `npm run snapshot-api`. Confira o diff,
-o significado das mudanças e os consumidores antes de aceitá-la. Atualizar
-o manifesto não torna uma alteração incompatível segura.
+A deliberate baseline update uses `npm run snapshot-api`. Review the diff,
+the meaning of the changes, and affected consumers before accepting it.
+Updating the manifest does not make a breaking change safe.
 
-## Distribuição e atendimento
+## Distribution and support
 
-O repositório público é `raimshq/raims-node`. A primeira entrega usa somente
-o GitHub: fontes na `main`, tag da versão de `package.json` e release com
-`raims-node.tgz` e `SHA256SUMS`. O pacote vem da rodada aprovada do gate;
-confira o commit da tag, baixe o asset, compare o hash e valide a instalação
-em um consumidor limpo. O nome interno do pacote é `raims`.
+The public repository is `raimshq/raims-node`. Initial distribution uses GitHub
+only: source on `main`, a tag matching `package.json`, and a release containing
+`raims-node.tgz` and `SHA256SUMS`. Use the package produced by the approved gate.
+Verify the tag's commit, download the asset, compare its checksum, and validate
+a clean installation. The package's internal name is `raims`.
 
-O perfil `public-sdk-source` exige os gates Commit e Deploy, incluindo SAST
-JavaScript, auditoria runtime e checks do destino. Essa entrega não possui
-workflows executáveis. O CI futuro deve usar os runners AWS autorizados e
-uma revisão imutável do Toolkit que contenha o validador Node.js.
+The `public-sdk-source` profile requires the Commit and Deploy gates, including
+JavaScript SAST, the runtime audit, and destination checks. This delivery has no
+executable workflows. Future CI must use authorized AWS runners and an immutable
+Toolkit revision containing the Node.js validator.
 
-Uma publicação npm exige autorização própria, confirmação da titularidade
-do nome, validação do mesmo commit no CI autorizado e instalação a partir
-do registry. Não acrescente credenciais aos fontes ou logs nem crie
-infraestrutura para contornar o fluxo de releases.
+npm publication requires its own authorization, confirmed ownership of the
+package name, successful validation of the same commit in authorized CI, and
+installation from the registry. Do not add credentials to sources or logs or
+create infrastructure to bypass the release process.
 
-Na publicação dos guias BR/EN no `raims-developer-docs`, use a distribuição
-efetivamente disponível e registre o changelog na data real. A publicação
-desse site segue autorização própria. Essa fonte já alimenta o atendimento;
-regenere os catálogos e valide as respostas do bot. A orientação deve cobrir backend,
-permissões, ambiente pela chave, simulações, paginação, idempotência, `202`,
-erros e webhooks. Não é necessário acrescentar dados de conta nem ferramentas
-financeiras ao contrato de contexto do chat por causa da biblioteca.
+When publishing the BR/EN guides in `raims-developer-docs`, describe the
+available distribution and use the actual availability date in the changelog.
+Publishing that site requires separate authorization. It already feeds support;
+regenerate its catalogs and validate bot guidance. Cover backend use,
+permissions, environment selection by key, simulations, pagination, idempotency,
+`202`, errors, and webhooks. The library does not require account data or new
+financial tools in the chat context contract.
 
-O SDK não altera a Public API nem o comportamento HTTP consumido pelo CLI,
-pelos SDKs PHP/.NET ou pelo MCP. Esses consumidores não exigem regeneração
-para esta entrega. Acompanhe disponibilidade, integração ao atendimento e
-publicação em `TODO.md` até confirmar os destinos autorizados.
+The SDK does not change the Public API or the HTTP behavior consumed by the
+CLI, PHP/.NET SDKs, or MCP. These consumers do not need regeneration for this
+delivery. Track availability, support integration, and publication in `TODO.md`
+until the authorized destinations have been verified.

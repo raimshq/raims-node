@@ -1,6 +1,6 @@
-# Uso do SDK
+# SDK usage
 
-## Configurar o cliente
+## Configure the client
 
 ```js
 const raims = new Raims(apiKey, {
@@ -9,14 +9,14 @@ const raims = new Raims(apiKey, {
 });
 ```
 
-`timeout` é o prazo por tentativa HTTP, incluindo a leitura do corpo, em
-milissegundos, de 1 a 300000. O padrão é 80000. `maxNetworkRetries` vai de
-0 a 5, com padrão 0, e só se aplica a leituras GET. A aplicação pode reutilizar
-uma instância entre requisições para aproveitar as conexões do transporte.
+`timeout` is the deadline for each HTTP attempt, including reading the body,
+in milliseconds from 1 to 300000. The default is 80000. `maxNetworkRetries`
+ranges from 0 to 5, defaults to 0, and only applies to GET reads. Your application
+can reuse one client across requests to reuse transport connections.
 
-Cada chamada aceita as opções `apiKey`, `idempotencyKey`, `timeout`,
-`maxNetworkRetries` e `signal` por último. A credencial por requisição não
-altera a configuração do cliente nem a de outra chamada.
+Every method accepts `apiKey`, `idempotencyKey`, `timeout`, `maxNetworkRetries`,
+and `signal` in its final options argument. A per-request credential does not
+change the client configuration or another request's credential.
 
 ```js
 const charge = await raims.charges.retrieve(chargeId, {
@@ -29,44 +29,42 @@ const charges = await raims.charges.list({ customer_id: customerId }, {
 });
 ```
 
-O SDK aceita somente as opções documentadas. Não há headers arbitrários ou
-configuração de ambiente. `apiBase` aceita uma origem HTTPS sem caminho,
-credenciais, query ou fragmento. HTTP é permitido somente em loopback para
-desenvolvimento local. Não desabilite a verificação TLS.
+The SDK accepts only documented options. Arbitrary headers and environment
+configuration are not supported. `apiBase` accepts an HTTPS origin without a
+path, credentials, query, or fragment. HTTP is allowed only on loopback for
+local development. Do not disable TLS verification.
 
-O transporte não segue redirects, não envia arquivos e não baixa as URLs
-retornadas pela API. Faça uploads e downloads separadamente, sem anexar a
-chave de API, respeitando método, tipo de conteúdo e expiração do link.
+The transport does not follow redirects, upload files, or download URLs returned
+by the API. Upload and download separately without attaching the API key,
+respecting the link's method, content type, and expiration.
 
-## Parâmetros e respostas
+## Parameters and responses
 
-Os campos mantêm os nomes JSON da API. `undefined` em propriedades é omitido;
-`null`, `false`, zero e objetos vazios são preservados. Isso permite distinguir
-um campo ausente de um pedido explícito de limpeza em atualizações parciais.
-Datas usam Unix segundos UTC; os timeouts do SDK usam milissegundos.
+Fields retain the API's JSON names. Object properties set to `undefined` are
+omitted; `null`, `false`, zero, and empty objects are preserved. This distinguishes
+an absent field from an explicit request to clear a field in a partial update.
+Dates use UTC Unix seconds; SDK timeouts use milliseconds.
 
-Use apenas dados JSON nos parâmetros. O SDK recusa proxies e operações que
-executariam getters ou serializadores personalizados, inclusive nos itens
-dos arrays. Uma propriedade `toJSON` que contenha dados comuns, como string ou `null`,
-continua sendo um dado JSON.
+Use only JSON data in parameters. The SDK rejects proxies and operations that
+would execute getters or custom serializers, including array items. A `toJSON`
+property containing ordinary data, such as a string or `null`, remains JSON data.
 
-Centavos e outros inteiros precisam caber em `Number.MAX_SAFE_INTEGER`.
-Entradas fora dessa faixa são recusadas. O SDK verifica os tokens numéricos
-recebidos antes de decodificar JSON e recusa respostas que arredondariam
-inteiros ou frações para inteiros. Não converta identificadores string em
-números nem valores financeiros em ponto flutuante.
+Cent amounts and other integers must fit within `Number.MAX_SAFE_INTEGER`.
+Inputs outside that range are rejected. The SDK checks received numeric tokens
+before decoding JSON and rejects responses that would round integers or
+fractions to integers. Do not turn string identifiers into numbers or use
+floating-point numbers for financial amounts.
 
-As respostas passam por validação estrutural de campos obrigatórios, objetos,
-listas, escalares, nulabilidade e valores fixos do contrato. Campos e valores
-futuros de enums são preservados. Formatos, permissões, limites e regras de
-negócio pertencem à API.
+Responses undergo structural validation of required fields, objects, lists,
+scalars, nullability, and fixed contract values. Future fields and enum values
+are preserved. Formats, permissions, limits, and business rules belong to the API.
 
-`lastResponse` contém `statusCode`, `requestId`, `idempotencyReplayed` e
-`retryAfter`. Essa propriedade não entra em `JSON.stringify(resource)`.
-Respostas documentadas sem corpo retornam `null`. Um status de sucesso não
-documentado ou um corpo incompatível gera `UnexpectedResponseError`.
+`lastResponse` contains `statusCode`, `requestId`, `idempotencyReplayed`, and
+`retryAfter`. It is excluded from `JSON.stringify(resource)`. Documented empty
+responses return `null`. An undocumented success status or incompatible body
+raises `UnexpectedResponseError`.
 
-## Paginação
+## Pagination
 
 ```js
 const page = await raims.charges.list({ customer_id: customerId, page_size: 50 });
@@ -74,9 +72,9 @@ const next = await page.nextPage();
 const previous = await page.previousPage();
 ```
 
-Os métodos retornam `null` quando não há continuação nessa direção. Eles
-preservam filtros, credencial e opções, removendo o cursor da direção contrária.
-Não envie `after` e `before` juntos.
+These methods return `null` when there is no continuation in that direction.
+They retain filters, credentials, and options, and remove the opposite cursor.
+Do not send `after` and `before` together.
 
 ```js
 await raims.charges.list({ page_size: 100 }).autoPagingEach(async charge => {
@@ -85,15 +83,14 @@ await raims.charges.list({ page_size: 100 }).autoPagingEach(async charge => {
 });
 ```
 
-`for await` e `autoPagingEach` avançam por todas as páginas, inclusive após uma
-página vazia que indique continuação. Cursores ausentes ou repetidos geram
-`UnexpectedResponseError`. Cada nova página pode falhar ou atingir rate limits.
-Alterações concorrentes seguem as garantias da API; o iterador não cria um
-snapshot dos dados. `autoPagingToArray({ limit })` exige um limite de 1 a
-1000000 para controlar o uso de memória. A lista de tipos de evento de webhook
-não é paginada.
+`for await` and `autoPagingEach` advance through every page, including an empty
+page that indicates continuation. Missing or repeated cursors raise
+`UnexpectedResponseError`. Each subsequent page can fail or reach a rate limit.
+Concurrent changes follow the API's guarantees; the iterator does not create
+a data snapshot. `autoPagingToArray({ limit })` requires a limit from 1 to
+1000000 to bound memory use. The webhook event-type list is not paginated.
 
-## Erros e tentativas
+## Errors and retries
 
 ```js
 import { RateLimitError, ConnectionError } from 'raims';
@@ -104,60 +101,56 @@ try {
   if (error instanceof RateLimitError) {
     console.log(error.statusCode, error.code, error.requestId);
   } else if (error instanceof ConnectionError) {
-    // Avaliar a recuperação conforme o tipo de operação.
+    // Decide how to recover based on the operation.
   } else {
     throw error;
   }
 }
 ```
 
-As categorias HTTP são `InvalidRequestError`, `AuthenticationError`,
-`PermissionError`, `NotFoundError`, `ConflictError`, `RateLimitError` e
-`ApiError`. Falhas de rede, cancelamento e timeout geram `ConnectionError`.
-Falhas de protocolo geram `UnexpectedResponseError`. Todas derivam de
-`RaimsError`; erros de configuração e serialização usam `TypeError`.
-Cancelamentos mantêm a categoria `ConnectionError` também quando `abort(reason)`
-recebe um motivo personalizado.
+HTTP error categories are `InvalidRequestError`, `AuthenticationError`,
+`PermissionError`, `NotFoundError`, `ConflictError`, `RateLimitError`, and
+`ApiError`. Network failures, cancellation, and timeouts raise `ConnectionError`.
+Protocol failures raise `UnexpectedResponseError`. All extend `RaimsError`;
+configuration and serialization errors use `TypeError`. Cancellation remains a
+`ConnectionError` when `abort(reason)` receives a custom reason.
 
-Os erros HTTP expõem `statusCode`, `code`, `requestId` e `lastResponse`.
-`apiError` permite consultar explicitamente a mensagem e os detalhes da API;
-esse conteúdo pode conter dados sensíveis e não é incluído na inspeção ou
-serialização padrão do erro. Não registre corpos, credenciais, documentos
-pessoais ou links temporários.
+HTTP errors expose `statusCode`, `code`, `requestId`, and `lastResponse`.
+`apiError` provides explicit access to the API's message and details. This
+content may contain sensitive data and is excluded from default error inspection
+and serialization. Do not log bodies, credentials, personal documents, or temporary links.
 
-Se a leitura de uma resposta HTTP 4xx ou 5xx for concluída como texto UTF-8,
-o SDK mantém a categoria HTTP mesmo quando o conteúdo não é um envelope de
-erro válido. Nesse caso, `apiError` é `null`. Confira essa propriedade antes
-de consultar a mensagem ou os detalhes da API.
+When an HTTP 4xx or 5xx response body is fully read as UTF-8 text, the SDK retains
+the HTTP error category even if the content is not a valid error envelope.
+In that case, `apiError` is `null`. Check this property before reading the
+API's message or details.
 
-Um corpo com UTF-8 inválido gera `UnexpectedResponseError`, inclusive em
-respostas HTTP 4xx ou 5xx. O status e o identificador de requisição disponível
-permanecem em `statusCode` e `requestId`. Essa falha de protocolo não é
-repetida automaticamente.
+An invalid UTF-8 body raises `UnexpectedResponseError`, including for HTTP 4xx
+or 5xx responses. The available status and request identifier remain accessible
+through `statusCode` and `requestId`. This protocol failure is not retried automatically.
 
-Com retries habilitados, somente GET repete falhas de conexão e HTTP 408,
-429, 500, 502, 503 ou 504. Há espera progressiva com variação aleatória.
-`Retry-After` numérico ou em data HTTP é respeitado, inclusive quando a conexão
-é interrompida após o recebimento dos headers. Se exigir mais de 30 segundos,
-o erro é devolvido para a aplicação decidir quando tentar novamente.
-Cancelamento e respostas inválidas não são repetidos.
+With retries enabled, only GET retries connection failures and HTTP 408, 429,
+500, 502, 503, or 504. Backoff increases between attempts and includes jitter.
+Numeric or HTTP-date `Retry-After` values are respected, including when the
+connection fails after receiving headers. If the required wait exceeds 30
+seconds, the error is returned so your application can decide when to retry.
+Cancellation and invalid responses are not retried.
 
-POST, PATCH, PUT e DELETE nunca são repetidos automaticamente, mesmo com uma
-chave de idempotência. Gere e persista uma chave para cada intenção quando
-o endpoint aceitar o header. Ao repetir manualmente após perder a resposta,
-reutilize a mesma chave e parâmetros. HTTP `202` mantém o resultado pendente.
+POST, PATCH, PUT, and DELETE are never retried automatically, even with an
+idempotency key. Generate and persist one key for each intent when the endpoint
+accepts the header. When retrying manually after losing a response, reuse the
+same key and parameters. HTTP `202` keeps the result pending.
 
-## Diagnósticos e transporte
+## Diagnostics and transport
 
-`requestObserver` recebe `operationId`, `method`, `path` parametrizado,
-`attempt`, `durationMs`, `statusCode`, `requestId`, `willRetry` e `retryDelayMs`
-após cada tentativa. Não recebe query, IDs de recurso, corpos ou credenciais.
-Exceções ou rejeições do callback não mudam o resultado da chamada. Chamadas
-iniciadas no contexto do callback não geram notificações recursivas.
+`requestObserver` receives `operationId`, `method`, the parameterized `path`,
+`attempt`, `durationMs`, `statusCode`, `requestId`, `willRetry`, and `retryDelayMs`
+after each attempt. It does not receive queries, resource IDs, bodies, or
+credentials. Callback exceptions or rejections do not change the request's
+result. Requests started in the callback's context do not emit recursive notifications.
 
-Para adaptar o transporte, `fetch` deve seguir a Fetch API do Node.js, retornar
-uma instância nativa de `Response`, respeitar `AbortSignal`, TLS e
-`redirect: 'manual'`. Falhas de transporte usam `TypeError`, `AbortError`,
-`TimeoutError` ou `ConnectionError`; outros erros da aplicação são propagados.
-Um transporte customizado também precisa preservar o isolamento de headers.
-O SDK não envia telemetria para terceiros.
+A custom `fetch` must follow the Node.js Fetch API, return a native `Response`,
+and respect `AbortSignal`, TLS, and `redirect: 'manual'`. Transport failures use
+`TypeError`, `AbortError`, `TimeoutError`, or `ConnectionError`; other application
+errors are propagated. Custom transports must also retain header isolation.
+The SDK does not send telemetry to third parties.
