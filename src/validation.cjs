@@ -2,6 +2,7 @@
 
 const { UnexpectedResponseError } = require('./errors.cjs');
 const { schemas } = require('./generated/contract.json');
+const isProxy = require('node:util').types.isProxy;
 
 function isObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -91,30 +92,60 @@ function validateResponse(value, schema, response, depth = 0) {
 
 function serializeParams(value) {
   const seen = new Set();
+  function descriptorFor(item, key) {
+    for (let current = item; current !== null; current = Object.getPrototypeOf(current)) {
+      if (isProxy(current)) throw new TypeError('Request parameters must contain only JSON values.');
+      const descriptor = Object.getOwnPropertyDescriptor(current, key);
+      if (descriptor) return descriptor;
+    }
+  }
+  function propertyValue(descriptor, depth) {
+    if (!descriptor || !Object.hasOwn(descriptor, 'value')) throw new TypeError('Request parameters cannot contain getters.');
+    return visit(descriptor.value, depth);
+  }
   function visit(item, depth) {
     if (depth > 100) throw new TypeError('Request parameters are nested too deeply.');
-    if (item === null || typeof item === 'string' || typeof item === 'boolean' || item === undefined) return;
+    if (item === null || typeof item === 'string' || typeof item === 'boolean' || item === undefined) return item;
     if (typeof item === 'number') {
       if (!Number.isFinite(item) || (Number.isInteger(item) && !Number.isSafeInteger(item))) {
         throw new TypeError('Request numbers must be finite and integers must be safe.');
       }
-      return;
+      return item;
     }
-    if (typeof item !== 'object' || (!Array.isArray(item) && Object.getPrototypeOf(item) !== Object.prototype && Object.getPrototypeOf(item) !== null)) {
+    if (typeof item !== 'object' || isProxy(item) || (!Array.isArray(item) && Object.getPrototypeOf(item) !== Object.prototype && Object.getPrototypeOf(item) !== null)) {
       throw new TypeError('Request parameters must contain only JSON values.');
     }
     if (seen.has(item)) throw new TypeError('Request parameters cannot contain cycles.');
     seen.add(item);
-    for (const key of Object.keys(item)) {
-      const descriptor = Object.getOwnPropertyDescriptor(item, key);
-      if (!descriptor || !Object.hasOwn(descriptor, 'value')) throw new TypeError('Request parameters cannot contain getters.');
-      visit(descriptor.value, depth + 1);
+    const serializer = descriptorFor(item, 'toJSON');
+    if (serializer && (!Object.hasOwn(serializer, 'value') || typeof serializer.value === 'function')) {
+      throw new TypeError('Request parameters cannot override JSON serialization.');
     }
-    if (Object.hasOwn(item, 'toJSON')) throw new TypeError('Request parameters cannot override JSON serialization.');
+    const array = Array.isArray(item);
+    const snapshot = array ? [] : Object.create(null);
+    if (array) {
+      Object.setPrototypeOf(snapshot, null);
+      snapshot.length = Object.getOwnPropertyDescriptor(item, 'length').value;
+    }
+    for (const key of Object.keys(item)) {
+      const child = propertyValue(Object.getOwnPropertyDescriptor(item, key), depth + 1);
+      const index = array ? Number(key) : null;
+      if (!array || (Number.isInteger(index) && index >= 0 && index < snapshot.length && String(index) === key)) {
+        snapshot[key] = child;
+      }
+    }
+    if (array) {
+      // JSON arrays include non-enumerable and inherited indices, and turn holes into null.
+      for (let index = 0; index < snapshot.length; index++) {
+        if (Object.hasOwn(snapshot, index)) continue;
+        const descriptor = descriptorFor(item, String(index));
+        snapshot[index] = descriptor ? propertyValue(descriptor, depth + 1) : undefined;
+      }
+    }
     seen.delete(item);
+    return snapshot;
   }
-  visit(value, 0);
-  return JSON.stringify(value);
+  return JSON.stringify(visit(value, 0));
 }
 
 module.exports = { isObject, assertOptions, boundedInteger, parseJson, validateResponse, serializeParams };

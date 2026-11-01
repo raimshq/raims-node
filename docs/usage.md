@@ -45,6 +45,11 @@ Os campos mantêm os nomes JSON da API. `undefined` em propriedades é omitido;
 um campo ausente de um pedido explícito de limpeza em atualizações parciais.
 Datas usam Unix segundos UTC; os timeouts do SDK usam milissegundos.
 
+Use apenas dados JSON nos parâmetros. O SDK recusa proxies e operações que
+executariam getters ou serializadores personalizados, inclusive nos itens
+dos arrays. Uma propriedade `toJSON` que contenha dados comuns, como string ou `null`,
+continua sendo um dado JSON.
+
 Centavos e outros inteiros precisam caber em `Number.MAX_SAFE_INTEGER`.
 Entradas fora dessa faixa são recusadas. O SDK verifica os tokens numéricos
 recebidos antes de decodificar JSON e recusa respostas que arredondariam
@@ -120,9 +125,15 @@ esse conteúdo pode conter dados sensíveis e não é incluído na inspeção ou
 serialização padrão do erro. Não registre corpos, credenciais, documentos
 pessoais ou links temporários.
 
-Quando a resposta de erro não contém um envelope válido, `apiError` é `null`.
-A categoria HTTP, o status e o identificador de requisição disponível continuam
-acessíveis. Confira `apiError` antes de consultar sua mensagem ou seus detalhes.
+Se a leitura de uma resposta HTTP 4xx ou 5xx for concluída como texto UTF-8,
+o SDK mantém a categoria HTTP mesmo quando o conteúdo não é um envelope de
+erro válido. Nesse caso, `apiError` é `null`. Confira essa propriedade antes
+de consultar a mensagem ou os detalhes da API.
+
+Um corpo com UTF-8 inválido gera `UnexpectedResponseError`, inclusive em
+respostas HTTP 4xx ou 5xx. O status e o identificador de requisição disponível
+permanecem em `statusCode` e `requestId`. Essa falha de protocolo não é
+repetida automaticamente.
 
 Com retries habilitados, somente GET repete falhas de conexão e HTTP 408,
 429, 500, 502, 503 ou 504. Há espera progressiva com variação aleatória.

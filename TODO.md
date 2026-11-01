@@ -33,5 +33,9 @@
   erro inválidos, o respeito a `Retry-After` em respostas interrompidas e a
   consistência dos tipos e namespaces dos exports nomeados em ESM e CommonJS.
   Incluir também a normalização de cancelamentos com motivo personalizado.
+  Incluir a correção que permite gravar e remover a chave `toJSON` em
+  `metadata` quando seu valor é uma string ou `null`.
+  Incluir a proteção que recusa getters e serializadores personalizados em
+  arrays antes de preparar o corpo da requisição, preservando os dados enviados.
   A nota no site permanece pendente até sua publicação autorizada; a
   disponibilidade no GitHub é identificada pela release do repositório.

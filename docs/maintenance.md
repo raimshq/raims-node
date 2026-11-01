@@ -84,7 +84,9 @@ com essa base sem gravá-la. Ela é independente do contrato HTTP e não muda
 durante `npm run generate`.
 
 O check recusa remoções, renomes e mudanças incompatíveis de tipos,
-obrigatoriedade e parâmetros. Adições claramente compatíveis são permitidas;
+obrigatoriedade e parâmetros, incluindo novos métodos obrigatórios em tipos
+estruturais. Métodos opcionais podem ser adicionados sem exigir mudanças dos
+consumidores existentes. Adições claramente compatíveis são permitidas;
 mudanças complexas passam por comparação conservadora. TypeScript 6.0.3 é
 usado para extrair as declarações. `RAIMS_TYPESCRIPT` ou `--typescript` permite
 indicar o módulo dessa versão; o gate usa a cópia cuja integridade conferiu.

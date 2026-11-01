@@ -314,7 +314,7 @@ function incompatibilities(baseline, current) {
     }
     for (const [name, member] of Object.entries(after)) {
       if (Object.hasOwn(before, name)) continue;
-      if (member.kind === 'property' && !member.optional) issue(`${location}.${name}`, 'a required property was added');
+      if (['property', 'method'].includes(member.kind) && !member.optional) issue(`${location}.${name}`, `a required ${member.kind} was added`);
       else if (!['property', 'method'].includes(member.kind)) issue(`${location}.${name}`, 'a new complex member requires explicit review');
     }
   }
