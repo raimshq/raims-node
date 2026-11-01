@@ -4,3 +4,11 @@ coverage/
 .env
 .env.*
 *.log
+
+# Internal planning belongs in the private workspace backlog, outside Git.
+[Tt][Oo][Dd][Oo]
+[Tt][Oo][Dd][Oo][._-]*
+[Bb][Aa][Cc][Kk][Ll][Oo][Gg]
+[Bb][Aa][Cc][Kk][Ll][Oo][Gg][._-]*
+[Rr][Oo][Aa][Dd][Mm][Aa][Pp]
+[Rr][Oo][Aa][Dd][Mm][Aa][Pp][._-]*

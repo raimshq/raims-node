@@ -122,5 +122,6 @@ financial tools in the chat context contract.
 
 The SDK does not change the Public API or the HTTP behavior consumed by the
 CLI, PHP/.NET SDKs, or MCP. These consumers do not need regeneration for this
-delivery. Track availability, support integration, and publication in `TODO.md`
-until the authorized destinations have been verified.
+delivery. Track availability, support integration, and publication in the private
+workspace backlog maintained outside Git until the authorized destinations
+have been verified.

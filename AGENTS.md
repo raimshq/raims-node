@@ -3,6 +3,9 @@
 Read README, CONTRIBUTING, and docs/maintenance.md before changing this SDK.
 
 - Write repository descriptions and Markdown documentation in English.
+- Keep internal TODO lists, backlogs, and roadmaps out of this public repository
+  and its packages. Track operational work in the private workspace backlog
+  maintained outside Git. Do not publish its contents, location, or links.
 - Consume only the pinned public contract in contracts, with its checksum and
   immutable revision verified. Do not import private host code or contracts.
 - The package targets Node.js 22 or later, ESM and CommonJS modules, and
