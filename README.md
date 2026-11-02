@@ -12,20 +12,24 @@ version control, and logs.
 In the application that will use the SDK:
 
 ```sh
-npm install raims
+npm install @raimshq/raims
 ```
 
-The package name is `raims`. TypeScript declarations are included. Keep your
-application's lockfile to reproduce the installed dependency versions.
+The package name is `@raimshq/raims`. TypeScript declarations are included.
+Keep your application's lockfile to reproduce the installed dependency versions.
 
 To update to the latest stable version:
 
 ```sh
-npm install raims@latest
+npm install @raimshq/raims@latest
 ```
 
 Read the [release notes](https://github.com/raimshq/raims-node/releases) and test
 your integration after updating. Future updates are not installed automatically.
+
+If you installed an earlier GitHub archive as `raims`, replace that dependency
+with `@raimshq/raims` and update your `import` and `require` paths. The `Raims`
+class and resource methods keep the same names.
 
 The [GitHub releases](https://github.com/raimshq/raims-node/releases/latest)
 also provide `raims-node.tgz` and `SHA256SUMS`. To install a downloaded package,
@@ -34,7 +38,7 @@ verify its checksum and run `npm install /path/to/raims-node.tgz`.
 ## Quick start
 
 ```js
-import Raims from 'raims';
+import Raims from '@raimshq/raims';
 
 const apiKey = process.env.RAIMS_API_KEY;
 if (!apiKey) throw new Error('Set RAIMS_API_KEY on the server.');
@@ -47,8 +51,8 @@ for (const customer of customers.list) {
 }
 ```
 
-For CommonJS, use `const Raims = require('raims')`. The named exports `Raims`
-and `RaimsClient` refer to the same constructor.
+For CommonJS, use `const Raims = require('@raimshq/raims')`. The named exports
+`Raims` and `RaimsClient` refer to the same constructor.
 
 The base URL is `https://api.raims.com` in both environments. The API key
 determines the company, environment, and permissions; the client does not
@@ -82,7 +86,7 @@ does not confirm payment or completion of the financial operation.
 ## TypeScript
 
 ```ts
-import Raims, { type CreateChargeParams } from 'raims';
+import Raims, { type CreateChargeParams } from '@raimshq/raims';
 
 const params: CreateChargeParams = {
   customer_id: customerId,

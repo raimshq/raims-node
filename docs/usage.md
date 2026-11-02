@@ -93,7 +93,7 @@ a data snapshot. `autoPagingToArray({ limit })` requires a limit from 1 to
 ## Errors and retries
 
 ```js
-import { RateLimitError, ConnectionError } from 'raims';
+import { RateLimitError, ConnectionError } from '@raimshq/raims';
 
 try {
   await raims.customers.retrieve(customerId);

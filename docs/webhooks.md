@@ -4,7 +4,7 @@ Read the original body as bytes before using a JSON parser. The helper
 authenticates the delivery before decoding the JSON object.
 
 ```js
-import { Webhook } from 'raims';
+import { Webhook } from '@raimshq/raims';
 
 const event = Webhook.constructEvent(rawBody, request.headers, webhookSecret);
 ```

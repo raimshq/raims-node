@@ -1,5 +1,5 @@
 {
-  "name": "raims",
+  "name": "@raimshq/raims",
   "version": "0.1.2",
   "description": "Official Node.js SDK for the Raims public API.",
   "homepage": "https://docs.raims.com/en/integracoes/sdk-node",
