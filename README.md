@@ -7,27 +7,29 @@ Requires Node.js 22 or later. Uses Node.js HTTP transport and has no production
 dependencies. Run the SDK on the server and keep API keys out of browsers,
 version control, and logs.
 
-## Install from GitHub
+## Install
 
-In the application that will use the SDK, install the package from the latest release:
-
-```sh
-npm install https://github.com/raimshq/raims-node/releases/latest/download/raims-node.tgz
-```
-
-The package name is `raims`. TypeScript declarations are included. The package
-is not yet available from the npm registry.
-
-To update, download the package from the
-[latest release](https://github.com/raimshq/raims-node/releases/latest) and install
-the file in your application:
+In the application that will use the SDK:
 
 ```sh
-npm install /path/to/raims-node.tgz
+npm install raims
 ```
 
-Read the release notes and test your integration after updating. Installation
-records the selected version; future updates are not installed automatically.
+The package name is `raims`. TypeScript declarations are included. Keep your
+application's lockfile to reproduce the installed dependency versions.
+
+To update to the latest stable version:
+
+```sh
+npm install raims@latest
+```
+
+Read the [release notes](https://github.com/raimshq/raims-node/releases) and test
+your integration after updating. Future updates are not installed automatically.
+
+The [GitHub releases](https://github.com/raimshq/raims-node/releases/latest)
+also provide `raims-node.tgz` and `SHA256SUMS`. To install a downloaded package,
+verify its checksum and run `npm install /path/to/raims-node.tgz`.
 
 ## Quick start
 
@@ -126,5 +128,6 @@ See the [reference](docs/reference.md) for each resource's methods.
 - [Method reference](docs/reference.md)
 - [Security](SECURITY.md)
 - [API documentation](https://docs.raims.com/en/api)
+- [Installation and integration guide](https://docs.raims.com/en/integracoes/sdk-node)
 
 Distributed under the [MIT license](LICENSE).

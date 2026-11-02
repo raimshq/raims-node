@@ -1,0 +1,178 @@
+name: Validate Node.js SDK
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: raims-node-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  RAIMS_NODE_TOOLKIT_REF: 'cfcc3fd271be3845cc9abc2fa68fa14d061026fb'
+
+jobs:
+  validateNode:
+    name: validateNode (${{ matrix.node }})
+    if: github.repository == 'raimshq/raims-node'
+    runs-on:
+      - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+      - node-sdk-check-${{ matrix.node }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.18.0', '24.22.2', '26.1.0']
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout the candidate commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          path: Raims-Node
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12.14'
+
+      - name: Reject tracked files excluded by repository policy
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          checkout = Path(os.environ['GITHUB_WORKSPACE']) / 'Raims-Node'
+          ignored = subprocess.check_output([
+              'git', '-C', str(checkout), 'ls-files', '--cached', '--ignored',
+              '--exclude-from=.gitignore', '-z',
+          ])
+          count = sum(bool(path) for path in ignored.split(b'\0'))
+          if count:
+              print(f'Repository policy rejects {count} tracked ignored file(s). Remove them from Git tracking before publishing.', file=sys.stderr)
+              raise SystemExit(1)
+          PY
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Create a read-only validation source token
+        id: sources
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.RAIMS_CI_SOURCE_READER_CLIENT_ID }}
+          private-key: ${{ secrets.RAIMS_CI_SOURCE_READER_PRIVATE_KEY }}
+          owner: raimshq
+          repositories: Raims-Developer-Toolkit
+          permission-contents: read
+
+      - name: Checkout the reviewed validation tooling
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: raimshq/Raims-Developer-Toolkit
+          ref: ${{ env.RAIMS_NODE_TOOLKIT_REF }}
+          path: Developer-Toolkit
+          token: ${{ steps.sources.outputs.token }}
+          persist-credentials: false
+
+      - name: Run the canonical Node.js SDK checks
+        run: |
+          set -euo pipefail
+          cp Developer-Toolkit/internal/public-repositories/workspace/AGENTS.md AGENTS.md
+          actual_node_version="$(node --version)"
+          printf 'Node.js runtime: %s; expected: v%s\n' "$actual_node_version" '${{ matrix.node }}'
+          test "$actual_node_version" = 'v${{ matrix.node }}'
+          python Developer-Toolkit/scripts/release-preflight/node_sdk.py \
+            --source "$GITHUB_WORKSPACE/Raims-Node" \
+            --workspace "$GITHUB_WORKSPACE" \
+            --output "$GITHUB_WORKSPACE/.tmp/raims-node-sdk/validate-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-${{ matrix.node }}" \
+            --node "$(command -v node)" \
+            --prepare-tools
+
+  securityLinux:
+    name: securityLinux
+    if: github.repository == 'raimshq/raims-node'
+    runs-on:
+      - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+      - node-sdk-security
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout the candidate commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          path: Raims-Node
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12.14'
+
+      - name: Reject tracked files excluded by repository policy
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          checkout = Path(os.environ['GITHUB_WORKSPACE']) / 'Raims-Node'
+          ignored = subprocess.check_output([
+              'git', '-C', str(checkout), 'ls-files', '--cached', '--ignored',
+              '--exclude-from=.gitignore', '-z',
+          ])
+          count = sum(bool(path) for path in ignored.split(b'\0'))
+          if count:
+              print(f'Repository policy rejects {count} tracked ignored file(s). Remove them from Git tracking before publishing.', file=sys.stderr)
+              raise SystemExit(1)
+          PY
+
+      - name: Create a read-only validation source token
+        id: sources
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ vars.RAIMS_CI_SOURCE_READER_CLIENT_ID }}
+          private-key: ${{ secrets.RAIMS_CI_SOURCE_READER_PRIVATE_KEY }}
+          owner: raimshq
+          repositories: Raims-Developer-Toolkit
+          permission-contents: read
+
+      - name: Checkout the reviewed validation tooling
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          repository: raimshq/Raims-Developer-Toolkit
+          ref: ${{ env.RAIMS_NODE_TOOLKIT_REF }}
+          path: Developer-Toolkit
+          token: ${{ steps.sources.outputs.token }}
+          persist-credentials: false
+
+      - name: Run the canonical SDK security checks
+        run: |
+          set -euo pipefail
+          cp Developer-Toolkit/internal/public-repositories/workspace/AGENTS.md AGENTS.md
+          output="$GITHUB_WORKSPACE/.tmp/raims-node-sdk/security-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          python Developer-Toolkit/scripts/release-preflight/sdk_security.py \
+            --source "$GITHUB_WORKSPACE/Raims-Node" \
+            --workspace "$GITHUB_WORKSPACE" \
+            --repository Raims-Node \
+            --output "$output" \
+            --prepare-tools
+          python -c 'import json,os,sys; r=json.load(open(sys.argv[1],encoding="utf-8")); sys.exit(0 if r.get("status")=="pass" and r.get("repository")=="Raims-Node" and r.get("toolkitRevision")==os.environ["RAIMS_NODE_TOOLKIT_REF"] else "Canonical SDK security summary is invalid.")' "$output/summary.json"

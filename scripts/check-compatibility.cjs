@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const BASELINE = path.join(ROOT, 'contracts/node-api.json');
 const TYPESCRIPT_VERSION = '6.0.3';
 const SCHEMA_VERSION = 1;
-
+const WORKSPACE = [path.dirname(ROOT), path.dirname(path.dirname(ROOT))].find(candidate => fs.existsSync(path.join(candidate, 'Developer-Toolkit/scripts/release-preflight/node_sdk.py'))) || (path.basename(path.dirname(ROOT)).toLowerCase() === 'sdks' ? path.dirname(path.dirname(ROOT)) : path.dirname(ROOT));
 function argumentsFor(argv) {
   let mode = null;
   let typescript = process.env.RAIMS_TYPESCRIPT;
@@ -24,7 +24,7 @@ function argumentsFor(argv) {
       throw new Error('Usage: node scripts/check-compatibility.cjs [--check | --write] [--typescript <path>]');
     }
   }
-  return { mode: mode ?? '--check', typescript: path.resolve(typescript || path.join(ROOT, '../.tmp/raims-node-sdk/tools/node-tools/node_modules/typescript')) };
+  return { mode: mode ?? '--check', typescript: path.resolve(typescript || path.join(WORKSPACE, '.tmp/raims-node-sdk/tools/node-tools/node_modules/typescript')) };
 }
 
 function loadTypeScript(location) {
