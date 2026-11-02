@@ -5,10 +5,16 @@ coverage/
 .env.*
 *.log
 
-# Internal planning belongs in the private workspace backlog, outside Git.
+# Internal planning is not part of public source.
 [Tt][Oo][Dd][Oo]
 [Tt][Oo][Dd][Oo][._-]*
 [Bb][Aa][Cc][Kk][Ll][Oo][Gg]
 [Bb][Aa][Cc][Kk][Ll][Oo][Gg][._-]*
 [Rr][Oo][Aa][Dd][Mm][Aa][Pp]
 [Rr][Oo][Aa][Dd][Mm][Aa][Pp][._-]*
+
+# Local project instructions and maintenance files.
+[Aa][Gg][Ee][Nn][Tt][Ss].[Mm][Dd]
+/[Dd][Oo][Cc][Ss]/[Mm][Aa][Ii][Nn][Tt][Ee][Nn][Aa][Nn][Cc][Ee].[Mm][Dd]
+/[Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]/[Rr][Ee][Aa][Dd][Mm][Ee].[Mm][Dd]
+/[Tt][Ee][Mm][Pp][Ll][Aa][Tt][Ee][Ss]/[Cc][Ii]/
