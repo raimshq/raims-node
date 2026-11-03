@@ -1,0 +1,123 @@
+name: Publish Node.js SDK
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: raims-node-npm-release
+  cancel-in-progress: false
+
+env:
+  PYTHONDONTWRITEBYTECODE: '1'
+  PYTHONOPTIMIZE: '0'
+  RAIMS_NODE_TOOLKIT_REF: 'fd86135ba3401a79e70197ae9c6e9bee687aa29b'
+
+jobs:
+  prepareRelease:
+    permissions:
+      contents: write
+      actions: read
+    if: github.repository == 'raimshq/raims-node' && github.event.action == 'published' && !github.event.release.draft && !github.event.release.prerelease
+    runs-on:
+      - codebuild-raims-github-actions-${{ github.run_id }}-${{ github.run_attempt }}
+      - node-sdk-release-check
+    timeout-minutes: 25
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout the release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          path: Raims-Node
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.14'
+      - name: Verify release, prior AWS validation, and approved npm bytes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python Raims-Node/scripts/release.py prepare --source Raims-Node --artifact .tmp/raims-node-sdk/npm-upload
+      - name: Upload the approved npm package and public provenance
+        id: upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: raims-node-npm-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .tmp/raims-node-sdk/npm-upload/dist/*
+            .tmp/raims-node-sdk/npm-upload/release-manifest.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+  publishNpm:
+    needs: prepareRelease
+    if: github.repository == 'raimshq/raims-node' && github.event.action == 'published' && !github.event.release.draft && !github.event.release.prerelease
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: npm-publish
+      url: https://www.npmjs.com/package/@raimshq/raims
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout the release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          path: Raims-Node
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.12.14'
+      - name: Setup the pinned publishing runtime
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '24.22.2'
+      - name: Download the approved npm package from this validation job
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          artifact-ids: ${{ needs.prepareRelease.outputs.artifact_id }}
+          path: .tmp/raims-node-sdk/npm-upload
+          merge-multiple: true
+          digest-mismatch: error
+      - name: Verify the release and immutable npm version
+        id: verify
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python Raims-Node/scripts/release.py verify --source Raims-Node --artifact .tmp/raims-node-sdk/npm-upload
+      - name: Prepare the integrity-checked npm CLI without publishing credentials
+        id: cli
+        if: steps.verify.outputs.publishRequired == 'true'
+        env:
+          ACTIONS_ID_TOKEN_REQUEST_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ''
+          NODE_AUTH_TOKEN: ''
+          NPM_TOKEN: ''
+        run: python Raims-Node/scripts/release.py cli --source Raims-Node --artifact .tmp/raims-node-sdk/npm-cli
+      - name: Publish the exact approved npm package through OIDC
+        if: steps.verify.outputs.publishRequired == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python Raims-Node/scripts/release.py publish --source Raims-Node --artifact .tmp/raims-node-sdk/npm-upload --npm-cli '${{ steps.cli.outputs.npmCli }}'
+      - name: Confirm public npm package bytes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python Raims-Node/scripts/release.py confirm --source Raims-Node --artifact .tmp/raims-node-sdk/npm-upload

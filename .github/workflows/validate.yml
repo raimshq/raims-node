@@ -14,7 +14,7 @@ concurrency:
 
 env:
   PYTHONDONTWRITEBYTECODE: '1'
-  RAIMS_NODE_TOOLKIT_REF: '522824f048ac032b893d638880809660f7dd1ff8'
+  RAIMS_NODE_TOOLKIT_REF: 'fd86135ba3401a79e70197ae9c6e9bee687aa29b'
 
 jobs:
   validateNode:
@@ -101,6 +101,26 @@ jobs:
             --output "$GITHUB_WORKSPACE/.tmp/raims-node-sdk/validate-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-${{ matrix.node }}" \
             --node "$(command -v node)" \
             --prepare-tools
+
+      - name: Record the canonical npm distribution
+        if: matrix.node == '24.22.2'
+        run: |
+          python Raims-Node/scripts/release.py record \
+            --source Raims-Node \
+            --toolkit Developer-Toolkit \
+            --report ".tmp/raims-node-sdk/validate-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-24.22.2/report.json" \
+            --artifact ".tmp/raims-node-sdk/canonical-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+      - name: Upload canonical Node distribution evidence
+        if: matrix.node == '24.22.2'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: raims-node-validation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .tmp/raims-node-sdk/canonical-${{ github.run_id }}-${{ github.run_attempt }}/dist/*
+            .tmp/raims-node-sdk/canonical-${{ github.run_id }}-${{ github.run_attempt }}/release-manifest.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
 
   securityLinux:
     name: securityLinux
