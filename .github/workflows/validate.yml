@@ -14,7 +14,7 @@ concurrency:
 
 env:
   PYTHONDONTWRITEBYTECODE: '1'
-  RAIMS_NODE_TOOLKIT_REF: 'feabddffc328993fdf771c7b5b605e9886e8d91f'
+  RAIMS_NODE_TOOLKIT_REF: '5dd18f11e2c8d55faa86d78645c60d4833a32bea'
 
 jobs:
   validateNode:
