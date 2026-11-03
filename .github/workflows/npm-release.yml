@@ -15,7 +15,7 @@ concurrency:
 env:
   PYTHONDONTWRITEBYTECODE: '1'
   PYTHONOPTIMIZE: '0'
-  RAIMS_NODE_TOOLKIT_REF: 'fd86135ba3401a79e70197ae9c6e9bee687aa29b'
+  RAIMS_NODE_TOOLKIT_REF: 'feabddffc328993fdf771c7b5b605e9886e8d91f'
 
 jobs:
   prepareRelease:
