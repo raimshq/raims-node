@@ -1,6 +1,6 @@
 {
   "name": "@raimshq/raims",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Official Node.js SDK for the Raims public API.",
   "homepage": "https://docs.raims.com/en/integracoes/sdk-node",
   "repository": { "type": "git", "url": "https://github.com/raimshq/raims-node.git" },

@@ -47,7 +47,7 @@ function safeHeader(headers, name) {
 
 function responseInfo(response) {
   return Object.freeze({ statusCode: response.status,
-    requestId: safeHeader(response.headers, 'request-id') ?? safeHeader(response.headers, 'x-request-id'),
+    requestId: safeHeader(response.headers, 'request-id'),
     idempotencyReplayed: response.headers.get('idempotency-replayed')?.toLowerCase() === 'true',
     retryAfter: safeHeader(response.headers, 'retry-after') });
 }
