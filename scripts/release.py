@@ -147,6 +147,25 @@ def inspect_package(raw, version):
             'The npm archive metadata differs.')
 
 
+def validate_dependency_audit(audit):
+    require(isinstance(audit, dict) and audit.get('provider') == 'npm'
+            and audit.get('scope') == 'installed-runtime', 'The runtime dependency audit identity differs.')
+    counts = audit.get('vulnerabilities')
+    required = {'info', 'low', 'moderate', 'high', 'critical', 'total'}
+    require(isinstance(counts, dict) and required <= set(counts)
+            and all(isinstance(name, str) and type(value) is int and value >= 0
+                    for name, value in counts.items())
+            and set(counts) <= required | {'unknown'}
+            and counts['total'] == sum(value for name, value in counts.items() if name != 'total'),
+            'The runtime dependency audit has missing or inconsistent severity counts.')
+    dependencies = audit.get('dependencies')
+    require(isinstance(dependencies, dict) and dependencies
+            and all(isinstance(name, str) and type(value) is int and value >= 0
+                    for name, value in dependencies.items()),
+            'The runtime dependency audit has no valid dependency coverage.')
+    require(counts['critical'] == 0, 'A critical runtime dependency vulnerability blocks publication.')
+
+
 def record(source, report_path, artifact, toolkit):
     version = source_version(source)
     head = git(source, 'rev-parse', 'HEAD')
@@ -169,13 +188,12 @@ def record(source, report_path, artifact, toolkit):
             'The canonical Node SDK report is not bound to these sources.')
     tests = report.get('tests', {})
     audit = report.get('dependencyAudit', {})
+    validate_dependency_audit(audit)
     require(type(tests.get('tests')) is int and tests['tests'] > 0
             and tests.get('passed') == tests['tests'] and tests.get('failed') == 0
             and report.get('sourceTypes') == report.get('installedTypes')
             and type(report.get('sourceTypes', {}).get('publicTypes')) is int
-            and report['sourceTypes']['publicTypes'] > 0
-            and audit.get('provider') == 'npm' and audit.get('scope') == 'installed-runtime'
-            and audit.get('vulnerabilities') and all(value == 0 for value in audit['vulnerabilities'].values()),
+            and report['sourceTypes']['publicTypes'] > 0,
             'Canonical runtime, installed types, or dependency checks did not pass.')
     package = report.get('package', {})
     filename = package.get('filename', '')
