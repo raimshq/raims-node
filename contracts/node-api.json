@@ -5578,6 +5578,36 @@
                             {
                               "kind": "literal",
                               "type": "string",
+                              "value": "account.restored"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "balance.hold.created"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "balance.hold.released"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "boleto.available"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "boleto.compensated"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "boleto.issuance_failed"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
                               "value": "charge.canceled"
                             },
                             {
@@ -5588,12 +5618,92 @@
                             {
                               "kind": "literal",
                               "type": "string",
+                              "value": "charge.expired"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
                               "value": "charge.failed"
                             },
                             {
                               "kind": "literal",
                               "type": "string",
+                              "value": "charge.fully_refunded"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
                               "value": "charge.paid"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "charge.updated"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "customer.created"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "customer.deleted"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "customer.updated"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "dispute.closed"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "dispute.funds_debited"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "dispute.opened"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "dispute.updated"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "payment_link.created"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "payment_link.updated"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "pix.available"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "pix.issuance_failed"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "pix_refund.received"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "refund.accepted"
                             },
                             {
                               "kind": "literal",
@@ -5609,6 +5719,36 @@
                               "kind": "literal",
                               "type": "string",
                               "value": "refund.requested"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "statement.created"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "ted.received"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "withdrawal.accepted"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "withdrawal.completed"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "withdrawal.failed"
+                            },
+                            {
+                              "kind": "literal",
+                              "type": "string",
+                              "value": "withdrawal.requested"
                             }
                           ]
                         }

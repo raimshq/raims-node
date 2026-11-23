@@ -1,7 +1,7 @@
 {
   "source": {
-    "revision": "0169a1ed165a21748055baa144dd5b2cb84cd940",
-    "sha256": "0d74f3b440ed5650794fe948064221495f51c1bd72c250a7be5036c2719041d1"
+    "revision": "47aed0fee0f57350660595ccad636c4a6464223f",
+    "sha256": "df7f6bd91a7a70ca20a5a6af84eee7f3a246250b14238e9c8349d6aa5aa670b9"
   },
   "services": {
     "accounts": {
@@ -4108,7 +4108,35 @@
               "charge.failed",
               "refund.requested",
               "refund.completed",
-              "refund.failed"
+              "refund.failed",
+              "charge.updated",
+              "charge.expired",
+              "withdrawal.requested",
+              "withdrawal.completed",
+              "withdrawal.failed",
+              "dispute.opened",
+              "dispute.updated",
+              "dispute.closed",
+              "dispute.funds_debited",
+              "balance.hold.created",
+              "balance.hold.released",
+              "statement.created",
+              "ted.received",
+              "pix_refund.received",
+              "pix.available",
+              "pix.issuance_failed",
+              "boleto.available",
+              "boleto.issuance_failed",
+              "boleto.compensated",
+              "payment_link.created",
+              "payment_link.updated",
+              "refund.accepted",
+              "account.restored",
+              "customer.created",
+              "customer.updated",
+              "customer.deleted",
+              "withdrawal.accepted",
+              "charge.fully_refunded"
             ]
           }
         },
@@ -5346,7 +5374,35 @@
             "charge.failed",
             "refund.requested",
             "refund.completed",
-            "refund.failed"
+            "refund.failed",
+            "charge.updated",
+            "charge.expired",
+            "withdrawal.requested",
+            "withdrawal.completed",
+            "withdrawal.failed",
+            "dispute.opened",
+            "dispute.updated",
+            "dispute.closed",
+            "dispute.funds_debited",
+            "balance.hold.created",
+            "balance.hold.released",
+            "statement.created",
+            "ted.received",
+            "pix_refund.received",
+            "pix.available",
+            "pix.issuance_failed",
+            "boleto.available",
+            "boleto.issuance_failed",
+            "boleto.compensated",
+            "payment_link.created",
+            "payment_link.updated",
+            "refund.accepted",
+            "account.restored",
+            "customer.created",
+            "customer.updated",
+            "customer.deleted",
+            "withdrawal.accepted",
+            "charge.fully_refunded"
           ]
         }
       }
