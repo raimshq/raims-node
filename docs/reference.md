@@ -54,6 +54,16 @@ Methods, inputs, and responses for integrating with the Raims public API.
 | `webhooks.setPause` | `PATCH /v1/webhooks/{webhook_id}/pause` | `SetWebhookPauseParams` | `WebhookPause` |
 | `webhooks.rotateSecret` | `POST /v1/webhooks/{webhook_id}/rotate_secret` | `RotateWebhookSecretParams` | `WebhookSecretRotation` |
 | `webhooks.test` | `POST /v1/webhooks/{webhook_id}/test` | - | `WebhookTestAccepted` |
+| `webhookEvents.list` | `GET /v1/webhook_events` | `ListWebhookEventsParams` | `WebhookEventListResponse` |
+| `webhookEvents.retrieve` | `GET /v1/webhook_events/{event_id}` | - | `WebhookEventDetail` |
+| `webhookEvents.deliver` | `POST /v1/webhook_events/{event_id}/deliveries` | `DeliverWebhookEventParams` | `WebhookDeliveryResendAccepted` |
+| `webhookDeliveries.list` | `GET /v1/webhook_deliveries` | `ListWebhookDeliveriesParams` | `WebhookDeliveryListResponse` |
+| `webhookDeliveries.retrieve` | `GET /v1/webhook_deliveries/{delivery_id}` | - | `WebhookDelivery` |
+| `webhookDeliveries.listAttempts` | `GET /v1/webhook_deliveries/{delivery_id}/attempts` | `ListWebhookDeliveryAttemptsParams` | `WebhookAttemptListResponse` |
+| `webhookDeliveries.retrieveAttempt` | `GET /v1/webhook_deliveries/{delivery_id}/attempts/{attempt_id}` | - | `WebhookAttemptDetail` |
+| `webhookDeliveries.advance` | `POST /v1/webhook_deliveries/{delivery_id}/advance` | - | `WebhookAdvanceAccepted` |
+| `webhookDeliveries.resend` | `POST /v1/webhook_deliveries/{delivery_id}/resend` | - | `WebhookDeliveryResendAccepted` |
+| `webhookDeliveries.resendMany` | `POST /v1/webhook_deliveries/resend` | `ResendWebhookDeliveriesParams` | `WebhookBulkResendAccepted` |
 | `withdrawalDestinations.list` | `GET /v1/withdrawal_destinations` | `ListWithdrawalDestinationsParams` | `WithdrawalDestinationListResponse` |
 | `withdrawalDestinations.retrieve` | `GET /v1/withdrawal_destinations/{id}` | - | `WithdrawalDestination` |
 | `withdrawals.create` | `POST /v1/withdrawals` | `CreateWithdrawalParams` | `Withdrawal` |

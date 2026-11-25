@@ -48,3 +48,20 @@ successful HTTP response. If persistence fails, return a failure to allow redeli
 Use `event.id` to deduplicate processing: it identifies the logical event, while
 `webhook-id` identifies the delivery. A signature does not eliminate redeliveries
 or replace idempotent processing in your application.
+
+## Payment instruction events
+
+For new subscriptions, use `charge.payment_instructions_available` and
+`charge.payment_instructions_failed`. Read `data.id` for the charge ID and
+`data.payment_method` for the payment method. These event codes replace
+`pix.available`, `pix.issuance_failed`, `boleto.available`, and
+`boleto.issuance_failed` in the subscription catalog. Historical deliveries
+can retain the earlier codes.
+
+Read the event catalog for the authenticated environment before updating a
+subscription. For refund and dispute events, use `data.charge_id` when the
+event includes it.
+
+Use the event and delivery history services to inspect saved events, deliveries,
+and attempts. A response that accepts a resend or an earlier attempt does not
+confirm that the destination received it.
