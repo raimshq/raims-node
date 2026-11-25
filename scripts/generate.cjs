@@ -28,7 +28,14 @@ function resolve(value) {
 function validateSchemaShape(schema, location) {
   if (!schema || typeof schema !== 'object' || Array.isArray(schema)) throw new Error(`Unsupported schema at ${location}.`);
   const structural = ['type', 'properties', 'required', 'items', 'additionalProperties', 'anyOf', 'oneOf', 'allOf', 'enum', 'const', 'nullable'];
-  if (Object.hasOwn(schema, 'oneOf') || Object.hasOwn(schema, 'allOf') || schema.nullable === true) {
+  if (Object.hasOwn(schema, 'oneOf')) {
+    if (Object.keys(schema).length !== 1 || !Array.isArray(schema.oneOf) || schema.oneOf.length < 2 ||
+        schema.oneOf.some(branch => !branch || Object.keys(branch).length !== 2 || branch.type !== 'string' || typeof branch.pattern !== 'string')) {
+      throw new Error(`Only patterned string alternatives can be represented at ${location}.`);
+    }
+    return;
+  }
+  if (Object.hasOwn(schema, 'allOf') || schema.nullable === true) {
     throw new Error(`Unsupported schema composition at ${location}; review the SDK before updating the contract.`);
   }
   if (schema.$ref) {
@@ -85,7 +92,8 @@ function typeFor(schema, input = false) {
     resolve(schema);
     return publicName(schema.$ref.split('/').pop());
   }
-  if (schema.anyOf || schema.oneOf) return (schema.anyOf || schema.oneOf).map(s => `(${typeFor(s, input)})`).join(' | ');
+  if (schema.oneOf) return 'string';
+  if (schema.anyOf) return schema.anyOf.map(s => `(${typeFor(s, input)})`).join(' | ');
   if (schema.allOf) return schema.allOf.map(s => `(${typeFor(s, input)})`).join(' & ');
   if (Array.isArray(schema.type)) return schema.type.map(type => typeFor({ ...schema, type }, input)).join(' | ');
   if (schema.type === 'null') return 'null';
