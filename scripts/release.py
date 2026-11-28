@@ -1,6 +1,7 @@
 """Verify canonical Node SDK bytes and publish stable npm releases through OIDC."""
 import argparse
 import base64
+from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import io
 import json
@@ -227,15 +228,20 @@ def context(source):
     require(SHA.fullmatch(head) and head == os.environ.get('GITHUB_SHA')
             and git(source, 'rev-parse', 'refs/tags/' + tag + '^{commit}') == head
             and not git(source, 'status', '--porcelain', '--untracked-files=all'), 'The release sources differ.')
-    repo = github('')
-    require(repo.get('full_name') == REPOSITORY and repo.get('private') is False and repo.get('default_branch') == 'main'
-            and github('commits/' + tag).get('sha') == head, 'The public repository or tag differs.')
     git(source, 'merge-base', '--is-ancestor', head, 'origin/main')
     identifier = release.get('id')
     require(type(identifier) is int and identifier > 0, 'The release identity is invalid.')
-    current = github('releases/' + str(identifier))
-    require(current.get('id') == identifier and current.get('tag_name') == tag
-            and current.get('draft') is False and current.get('prerelease') is False, 'The public release changed.')
+
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        repository = pool.submit(github, '')
+        tagged_commit = pool.submit(github, 'commits/' + tag)
+        public_release = pool.submit(github, 'releases/' + str(identifier))
+        repo = repository.result()
+        require(repo.get('full_name') == REPOSITORY and repo.get('private') is False and repo.get('default_branch') == 'main'
+                and tagged_commit.result().get('sha') == head, 'The public repository or tag differs.')
+        current = public_release.result()
+        require(current.get('id') == identifier and current.get('tag_name') == tag
+                and current.get('draft') is False and current.get('prerelease') is False, 'The public release changed.')
     return {'sourceRevision': head, 'version': version, 'tag': tag, 'releaseId': identifier}
 
 
@@ -333,25 +339,31 @@ def upload_release_asset(identifier, name, raw):
                 'Release asset creation was not confirmed; inspect the release before retrying.')
 
 
+def verify_release_assets(assets, complete, error):
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        downloads = {name: pool.submit(public_download, assets[name]['browser_download_url'])
+                     for name in complete if name in assets}
+        for name, download in downloads.items():
+            require(download.result() == complete[name], error)
+
+
 def release_files(value, files, create_missing=False):
     rows = github('releases/' + str(value['releaseId'])).get('assets', [])
     assets = {asset['name']: asset for asset in rows}
     expected = set(files) | {'SHA256SUMS'}
     require(len(assets) == len(rows) and set(assets).issubset(expected), 'The release contains unexpected or duplicate assets.')
     complete = dict(files, SHA256SUMS=''.join(digest(files[name]) + '  ' + name + '\n' for name in sorted(files)).encode())
-    for name, raw in complete.items():
-        if name in assets:
-            require(public_download(assets[name]['browser_download_url']) == raw, 'An existing release asset differs from approved CI bytes.')
+    verify_release_assets(assets, complete, 'An existing release asset differs from approved CI bytes.')
     missing = set(complete) - set(assets)
-    require(not missing or create_missing, 'The approved npm release assets are missing.')
+    if not missing:
+        return
+    require(create_missing, 'The approved npm release assets are missing.')
     for name in sorted(missing):
         upload_release_asset(value['releaseId'], name, complete[name])
-    if missing:
-        rows = github('releases/' + str(value['releaseId'])).get('assets', [])
-        assets = {asset['name']: asset for asset in rows}
+    rows = github('releases/' + str(value['releaseId'])).get('assets', [])
+    assets = {asset['name']: asset for asset in rows}
     require(len(assets) == len(rows) and set(assets) == expected, 'The release asset inventory differs.')
-    for name, raw in complete.items():
-        require(public_download(assets[name]['browser_download_url']) == raw, 'A public npm release asset differs.')
+    verify_release_assets(assets, complete, 'A public npm release asset differs.')
 
 
 def registry(endpoint):
@@ -445,9 +457,9 @@ def verified_cli(path):
     archive_raw = (package.parent / 'npm-cli.tgz').read_bytes()
     require(len(archive_raw) <= MAX_DOWNLOAD and 'sha512-' + base64.b64encode(hashlib.sha512(archive_raw).digest()).decode() == NPM_INTEGRITY,
             'The cached official npm CLI archive integrity differs.')
-    with tarfile.open(fileobj=io.BytesIO(archive_raw), mode='r:gz') as archive:
+    with tarfile.open(fileobj=io.BytesIO(archive_raw), mode='r|gz') as archive:
         files = {item.name.removeprefix('package/'): digest(archive.extractfile(item).read())
-                 for item in archive.getmembers() if item.isfile()}
+                 for item in archive if item.isfile()}
     expected_tree = digest(json.dumps(files, sort_keys=True).encode('utf-8'))
     require(receipt.get('version') == PUBLISH_NPM and receipt.get('integrity') == NPM_INTEGRITY
             and receipt.get('archiveSha256') == digest(archive_raw)
